@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>Uni-T 팀과외 · 학생/학부모 모듈</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- 폰트 (나중에 변경 가능) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/static/pretendard-dynamic-subset.css" />
+
+  <!-- 메인 스타일 (나중에 작성) -->
+  <link rel="stylesheet" href="./styles/main.css" />
+  
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="app app--mode-student">
+  <div class="app-shell">
+
+    <!-- =========================================
+         글로벌 헤더: 로고, 모드 전환, 알림센터 버튼
+    ========================================== -->
+    <header class="app-header" data-block="header">
+      <div class="app-header__left">
+        <div class="app-logo">
+          <span class="app-logo__mark">U</span>
+          <span class="app-logo__text">
+            <span class="app-logo__title">Uni-T</span>
+            <span class="app-logo__subtitle">팀과외 학습/관리 앱</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="app-header__right">
+        <!-- 모드 전환 스위치: 학생 ↔ 학부모 ↔ 튜터 ↔ 관리자 -->
+        <div class="profile-switch" data-component="profile-switch">
+          <!-- 이 버튼을 누르면 student/parent/tutor/admin 모드 토글 (JS에서 처리) -->
+          <button class="profile-switch__btn profile-switch__btn--active" data-mode="student">
+            학생
+          </button>
+          <button class="profile-switch__btn" data-mode="parent">
+            학부모
+          </button>
+          <button class="profile-switch__btn" data-mode="tutor">
+            튜터
+          </button>
+          <button class="profile-switch__btn" data-mode="admin">
+            관리자
+          </button>
+        </div>
+
+        <!-- 알림센터 진입 버튼 -->
+        <button class="icon-button" type="button" data-action="open-notifications" aria-label="알림센터 열기">
+          🔔
+        </button>
+      </div>
+    </header>
+
+    <!-- =========================================
+         메인 영역
+    ========================================== -->
+    <main class="app-main">
+
+      <!-- ===============================
+           1) 학부모 모드 대시보드
+           (기본은 숨김, parent 모드에서 표시)
+      ================================ -->
+      <section class="dashboard dashboard--parent" data-role="parent" hidden>
+        <!-- 상단 탭 네비게이션: 홈 / 결제·팀 관리 / 알림센터 -->
+        <nav class="tab-nav" data-component="parent-tabs">
+          <button class="tab-nav__btn tab-nav__btn--active" data-tab="parent-home">
+            홈
+          </button>
+          <button class="tab-nav__btn" data-tab="parent-billing">
+            결제 · 팀 관리
+          </button>
+          <button class="tab-nav__btn" data-tab="parent-notifications">
+            알림센터
+          </button>
+        </nav>
+
+        <!-- ========== [학부모] 홈 탭 ========== -->
+        <section id="parent-home" class="tab-panel tab-panel--active" data-tab-panel="parent-home">
+
+          <!-- 1. 최상단: 월간 리포트 요약 카드 -->
+          <section class="card card--report-summary" data-block="parent-report-summary">
+            <header class="card__header">
+              <h2 class="card__title">이번 달 학습 리포트 요약</h2>
+              <button class="link-button" type="button" data-action="open-full-report-parent">
+                리포트 전체보기 →
+              </button>
+            </header>
+
+            <div class="card__body report-summary">
+              <!-- 1-1. 팀 내 위치 수평 막대 그래프 -->
+              <div class="report-summary__item" data-metric="rank">
+                <h3 class="report-summary__label">팀 내 위치</h3>
+                <p class="report-summary__value">전체 N명 중 2위</p>
+                <!-- 실제 그래프는 나중에 캔버스/차트 라이브러리로 -->
+                <div class="report-summary__chart report-summary__chart--bar">
+                  <canvas id="parent-rank-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 1-2. 성취도 - 과제 수행률 -->
+              <div class="report-summary__item" data-metric="achievement-assignment">
+                <h3 class="report-summary__label">과제 수행률</h3>
+                <p class="report-summary__value">90%</p>
+                <div class="report-summary__chart report-summary__chart--donut">
+                  <canvas id="parent-assignment-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 1-3. 성취도 - 테스트 점수 -->
+              <div class="report-summary__item" data-metric="achievement-test">
+                <h3 class="report-summary__label">테스트 점수</h3>
+                <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
+                <div class="report-summary__chart report-summary__chart--donut">
+                  <canvas id="parent-test-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 1-3. 학습 패턴 변화 꺾은선 미니 그래프 -->
+              <div class="report-summary__item" data-metric="trend">
+                <h3 class="report-summary__label">학습 패턴</h3>
+                <p class="report-summary__value">지난달 대비 ▲5점</p>
+                <div class="report-summary__chart report-summary__chart--line">
+                  <canvas id="parent-trend-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. 중단: Today 실시간 학습 체크 -->
+          <section class="card card--today" data-block="parent-today">
+            <header class="card__header">
+              <h2 class="card__title">오늘 학습 현황</h2>
+            </header>
+
+            <div class="card__body today-status">
+              <!-- 출결 -->
+              <div class="today-status__item" data-today="attendance">
+                <h3 class="today-status__label">출결</h3>
+                <p class="today-status__value">
+                  출석 완료 <span class="today-status__meta">(오늘 수업 14:02)</span>
+                </p>
+              </div>
+
+              <!-- 과제 -->
+              <div class="today-status__item" data-today="assignment">
+                <h3 class="today-status__label">과제</h3>
+                <p class="today-status__value">
+                  과제 제출 완료
+                  <button class="link-button" type="button" data-action="open-assignment-proof">
+                    인증샷 보기
+                  </button>
+                </p>
+              </div>
+            </div>
+          </section>
+
+        </section>
+
+        <!-- ========== [학부모] 결제/팀 관리 탭 ========== -->
+        <section id="parent-billing" class="tab-panel" data-tab-panel="parent-billing" hidden>
+
+          <!-- 1. 상단: 1/N 스마트 결제 현황 -->
+          <section class="card card--billing" data-block="parent-billing-status">
+            <header class="card__header">
+              <h2 class="card__title">1/N 스마트 결제 현황</h2>
+            </header>
+
+            <div class="card__body billing-status">
+              <!-- 팀원 수 및 수강료 게이지 -->
+              <div class="billing-status__row">
+                <p class="billing-status__team">
+                  현재 팀원: <strong>3 / 4명</strong>
+                </p>
+                <div class="billing-status__gauge">
+                  <!-- 팀원 수에 따른 수강료 게이지 (나중에 progress bar로 구현) -->
+                  <div class="gauge-placeholder">수강료 게이지 자리</div>
+                </div>
+              </div>
+
+              <!-- 현재 결제 예정 금액 + 다음 인원 합류 시 메시지 -->
+              <div class="billing-status__row">
+                <p class="billing-status__price">
+                  현재 <strong>48만원</strong> 결제 예정<br />
+                  <span class="billing-status__hint">
+                    1명 더 모이면 <strong>40만원</strong>으로 자동 인하됩니다.
+                  </span>
+                </p>
+              </div>
+
+              <!-- 변동 내역 -->
+              <div class="billing-status__history">
+                <h3 class="billing-status__history-title">최근 변동 내역</h3>
+                <ul class="billing-status__history-list">
+                  <li>지난달 김철수 학생 합류로 4만원 환급되었습니다.</li>
+                  <!-- 나중에 실제 타임라인/히스토리로 렌더링 -->
+                </ul>
+              </div>
+
+              <!-- 결제 수단/예비 카드 설정 -->
+              <div class="billing-status__settings">
+                <h3 class="billing-status__settings-title">결제 설정</h3>
+                <button class="btn btn--secondary" type="button" data-action="manage-payment-methods">
+                  결제 수단 관리
+                </button>
+                <button class="btn btn--ghost" type="button" data-action="add-backup-card">
+                  연체 방지용 예비 카드 등록
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. 하단: 팀 매칭/모집 게시판 -->
+          <section class="card card--team-board" data-block="parent-team-board">
+            <header class="card__header">
+              <h2 class="card__title">팀 매칭 / 모집 게시판</h2>
+            </header>
+
+            <div class="card__body team-board">
+              <!-- 필터 영역 -->
+              <div class="team-board__filters">
+                <select class="team-board__filter" name="school" data-filter="school">
+                  <option value="">학교 선택</option>
+                  <!-- 숙명여고 / 휘문고 등 실제 값은 나중에 -->
+                </select>
+                <select class="team-board__filter" name="grade" data-filter="grade">
+                  <option value="">학년 선택</option>
+                  <option value="hs1">고1</option>
+                  <option value="hs2">고2</option>
+                  <option value="hs3">고3</option>
+                </select>
+                <select class="team-board__filter" name="target" data-filter="target">
+                  <option value="">목표 등급</option>
+                  <option value="1">1등급</option>
+                  <option value="2">2등급</option>
+                  <option value="3">3등급</option>
+                </select>
+              </div>
+
+              <!-- 팀 카드 리스트 -->
+              <div class="team-board__list">
+                <!-- 예시 카드 -->
+                <article class="team-card">
+                  <h3 class="team-card__title">숙명여고 2학년 수학 1등급 목표반</h3>
+                  <p class="team-card__meta">
+                    잔여 1석 · 거리 1.2km
+                  </p>
+                  <div class="team-card__actions">
+                    <button class="btn btn--primary" type="button" data-action="apply-team">
+                      가입 신청
+                    </button>
+                    <button class="btn btn--ghost" type="button" data-action="view-team-detail">
+                      상세 보기
+                    </button>
+                  </div>
+                </article>
+
+                <!-- 더 많은 카드들은 나중에 JS로 렌더링 -->
+              </div>
+
+              <!-- 새 팀 모집글 작성 -->
+              <div class="team-board__new">
+                <button class="btn btn--secondary" type="button" data-action="create-team-post">
+                  새 팀 모집글 작성
+                </button>
+              </div>
+            </div>
+          </section>
+
+        </section>
+
+        <!-- ========== [학부모] 알림센터 탭 ========== -->
+        <section id="parent-notifications" class="tab-panel" data-tab-panel="parent-notifications" hidden>
+          <section class="card card--notifications" data-block="parent-notifications">
+            <header class="card__header">
+              <h2 class="card__title">알림센터</h2>
+            </header>
+            <div class="card__body">
+              <div class="notifications__list">
+                <article class="notification-item">
+                  <p class="notification-item__type">리포트 업데이트</p>
+                  <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
+                  <p class="notification-item__time">2시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">결제 변동</p>
+                  <p class="notification-item__text">새 팀원 합류로 이번 달 결제 금액이 변경되었습니다.</p>
+                  <p class="notification-item__time">1일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">수업 긴급 공지</p>
+                  <p class="notification-item__text">이번 주 토요일 수업 시간이 30분 앞당겨집니다.</p>
+                  <p class="notification-item__time">3일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">팀원 변동</p>
+                  <p class="notification-item__text">김철수 학생이 팀에 합류했습니다.</p>
+                  <p class="notification-item__time">5일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">과제 제출</p>
+                  <p class="notification-item__text">오늘 과제가 제출되었습니다. 인증샷을 확인하세요.</p>
+                  <p class="notification-item__time">1주 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">결제 예정 알림</p>
+                  <p class="notification-item__text">다음 달 결제일이 3일 남았습니다.</p>
+                  <p class="notification-item__time">1주 전</p>
+                </article>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- ===============================
+           2) 학생 모드 대시보드
+           (기본 활성 모드)
+      ================================ -->
+      <section class="dashboard dashboard--student" data-role="student">
+        <!-- 학생 모드 상단 탭: My 학습 홈 / 리포트 / 알림센터 -->
+        <nav class="tab-nav" data-component="student-tabs">
+          <button class="tab-nav__btn tab-nav__btn--active" data-tab="student-home">
+            My 학습 홈
+          </button>
+          <button class="tab-nav__btn" data-tab="student-report">
+            월간 리포트
+          </button>
+          <button class="tab-nav__btn" data-tab="student-notifications">
+            알림센터
+          </button>
+        </nav>
+
+        <!-- ========== [학생] My 학습 홈 탭 ========== -->
+        <section id="student-home" class="tab-panel tab-panel--active" data-tab-panel="student-home">
+
+          <!-- A. Today: 실시간 학습 체크 + To-do -->
+          <section class="card card--today-student" data-block="student-today">
+            <header class="card__header">
+              <h2 class="card__title">오늘 할 일 · 학습 상태</h2>
+            </header>
+
+            <div class="card__body student-today">
+              <!-- 출결/과제 상태 + 인증샷 업로드 -->
+              <div class="student-today__status">
+                <div class="student-today__item" data-today="attendance">
+                  <h3 class="student-today__label">출결</h3>
+                  <p class="student-today__value">오늘 수업 출석 예정</p>
+                </div>
+
+                <div class="student-today__item" data-today="assignment">
+                  <h3 class="student-today__label">과제 인증</h3>
+                  <p class="student-today__value">
+                    과제 인증샷을 업로드하면<br />
+                    학부모 앱에 “제출 완료”로 표시됩니다.
+                  </p>
+                  <button class="btn btn--primary" type="button" data-action="upload-assignment-photo">
+                    인증샷 업로드
+                  </button>
+                </div>
+              </div>
+
+              <!-- To-do 리스트 -->
+              <div class="student-today__todo">
+                <h3 class="student-today__todo-title">오늘 To-do</h3>
+                <ul class="todo-list">
+                  <li class="todo-list__item">
+                    <span class="todo-list__label">수학1 p.40~60 풀기</span>
+                  </li>
+                  <li class="todo-list__item">
+                    <span class="todo-list__label">주간 테스트 오답 정리</span>
+                  </li>
+                  <!-- 나중에 실제 데이터로 렌더링 -->
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- C. 복습: 오답노트 / VOD / 보강 신청 -->
+          <section class="card card--review" data-block="student-review">
+            <header class="card__header">
+              <h2 class="card__title">복습 · 오답 / VOD</h2>
+            </header>
+
+            <div class="card__body review-section">
+              <div class="review-section__column">
+                <h3 class="review-section__title">오답노트</h3>
+                <p class="review-section__desc">최근 틀린 문제와 해설을 모아 볼 수 있습니다.</p>
+                <button class="btn btn--secondary" type="button" data-action="open-wrong-notes">
+                  오답노트 보기
+                </button>
+              </div>
+
+              <div class="review-section__column">
+                <h3 class="review-section__title">VOD 아카이브</h3>
+                <p class="review-section__desc">지난 수업 VOD 또는 튜터 요약본 다시보기.</p>
+                <button class="btn btn--secondary" type="button" data-action="open-vod-archive">
+                  VOD 열기
+                </button>
+
+                <h3 class="review-section__title">보강 신청</h3>
+                <p class="review-section__desc">결석/이해 부족 시 보강을 요청할 수 있습니다.</p>
+                <button class="btn btn--ghost" type="button" data-action="request-makeup-class">
+                  보강 신청하기
+                </button>
+              </div>
+            </div>
+          </section>
+
+        </section>
+
+        <!-- ========== [학생] 월간 리포트 탭 ========== -->
+        <section id="student-report" class="tab-panel" data-tab-panel="student-report" hidden>
+          
+          <!-- 1. 월간 리포트 요약 카드 (시각화) -->
+          <section class="card card--report-summary" data-block="student-report-summary">
+            <header class="card__header">
+              <h2 class="card__title">이번 달 내 학습 요약</h2>
+              <button class="link-button" type="button" data-action="open-full-report-student">
+                리포트 전체보기 →
+              </button>
+            </header>
+
+            <div class="card__body report-summary">
+              <!-- 팀 내 위치 -->
+              <div class="report-summary__item" data-metric="rank">
+                <h3 class="report-summary__label">팀 내 위치</h3>
+                <p class="report-summary__value">전체 N명 중 2위</p>
+                <div class="report-summary__chart report-summary__chart--bar">
+                  <canvas id="student-rank-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 성취도 - 과제 수행률 -->
+              <div class="report-summary__item" data-metric="achievement-assignment">
+                <h3 class="report-summary__label">과제 수행률</h3>
+                <p class="report-summary__value">90%</p>
+                <div class="report-summary__chart report-summary__chart--donut">
+                  <canvas id="student-assignment-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 성취도 - 테스트 점수 -->
+              <div class="report-summary__item" data-metric="achievement-test">
+                <h3 class="report-summary__label">테스트 점수</h3>
+                <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
+                <div class="report-summary__chart report-summary__chart--donut">
+                  <canvas id="student-test-chart"></canvas>
+                </div>
+              </div>
+
+              <!-- 학습 패턴 변화 -->
+              <div class="report-summary__item" data-metric="trend">
+                <h3 class="report-summary__label">학습 패턴</h3>
+                <p class="report-summary__value">지난달 대비 ▲5점</p>
+                <div class="report-summary__chart report-summary__chart--line">
+                  <canvas id="student-trend-chart"></canvas>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. 리포트 상세 (테스트 분포, 튜터 코멘트 등) -->
+          <section class="card card--full-report" data-block="student-report-detail">
+            <header class="card__header">
+              <h2 class="card__title">월간 리포트 상세</h2>
+            </header>
+            <div class="card__body">
+              <p>여기에 테스트 분포, 상/중/하위권 분포, 튜터 코멘트 등을 표시합니다.</p>
+            </div>
+          </section>
+        </section>
+
+        <!-- ========== [학생] 알림센터 탭 ========== -->
+        <section id="student-notifications" class="tab-panel" data-tab-panel="student-notifications" hidden>
+          <section class="card card--notifications" data-block="student-notifications">
+            <header class="card__header">
+              <h2 class="card__title">알림센터</h2>
+            </header>
+            <div class="card__body">
+              <div class="notifications__list">
+                <article class="notification-item">
+                  <p class="notification-item__type">과제 제출 완료</p>
+                  <p class="notification-item__text">오늘 과제가 제출되었습니다. 튜터 확인 중입니다.</p>
+                  <p class="notification-item__time">30분 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">수업 일정 변경</p>
+                  <p class="notification-item__text">이번 주 토요일 수업 시간이 19시로 변경되었습니다.</p>
+                  <p class="notification-item__time">2시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">월간 리포트 업데이트</p>
+                  <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
+                  <p class="notification-item__time">1일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">보강 신청 승인</p>
+                  <p class="notification-item__text">보강 신청이 승인되었습니다. 일정을 확인해주세요.</p>
+                  <p class="notification-item__time">2일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">테스트 결과</p>
+                  <p class="notification-item__text">주간 테스트 결과가 업로드되었습니다.</p>
+                  <p class="notification-item__time">3일 전</p>
+                </article>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- ===============================
+           3) 튜터 모드 대시보드
+           (기본은 숨김, tutor 모드에서 표시)
+      ================================ -->
+      <section class="dashboard dashboard--tutor" data-role="tutor" hidden>
+        <!-- 튜터 모드 상단 탭: 홈 / 클래스 관리 / 스케줄·자료 / 알림센터 -->
+        <nav class="tab-nav" data-component="tutor-tabs">
+          <button class="tab-nav__btn tab-nav__btn--active" data-tab="tutor-home">
+            홈
+          </button>
+          <button class="tab-nav__btn" data-tab="tutor-classes">
+            클래스 관리
+          </button>
+          <button class="tab-nav__btn" data-tab="tutor-schedule">
+            스케줄 · 자료
+          </button>
+          <button class="tab-nav__btn" data-tab="tutor-notifications">
+            알림센터
+          </button>
+        </nav>
+
+        <!-- ========== [튜터] 홈 탭 ========== -->
+        <section id="tutor-home" class="tab-panel tab-panel--active" data-tab-panel="tutor-home">
+          
+          <div class="grid grid--two-columns">
+            <!-- 실시간 급여 대시보드 카드 -->
+            <section class="card card--tutor-pay" data-block="tutor-pay-dashboard">
+              <header class="card__header">
+                <h2 class="card__title">이번 달 예상 급여</h2>
+                <p class="card__meta">실시간으로 학생 수, 팀 유지율과 연동됩니다.</p>
+              </header>
+
+              <div class="card__body tutor-pay">
+                <div class="tutor-pay__main">
+                  <p class="tutor-pay__label">예상 수령액</p>
+                  <p class="tutor-pay__amount">₩3,850,000</p>
+                </div>
+
+                <div class="tutor-pay__breakdown">
+                  <div class="tutor-pay__item">
+                    <span class="tutor-pay__item-label">기본급</span>
+                    <span class="tutor-pay__item-value">₩2,000,000</span>
+                  </div>
+                  <div class="tutor-pay__item">
+                    <span class="tutor-pay__item-label">인원 인센티브</span>
+                    <span class="tutor-pay__item-value">₩1,200,000</span>
+                  </div>
+                  <div class="tutor-pay__item">
+                    <span class="tutor-pay__item-label">다반 운영 보너스</span>
+                    <span class="tutor-pay__item-value">₩450,000</span>
+                  </div>
+                  <div class="tutor-pay__item">
+                    <span class="tutor-pay__item-label">유지율 보너스</span>
+                    <span class="tutor-pay__item-value">₩200,000</span>
+                  </div>
+                </div>
+
+                <div class="tutor-pay__simulation">
+                  <p class="tutor-pay__simulation-text">
+                    학생 1명 추가 시 다음 달 +₩250,000 예상!
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            <!-- 내 프로필 관리 카드 -->
+            <section class="card card--tutor-profile" data-block="tutor-profile">
+              <header class="card__header">
+                <h2 class="card__title">내 프로필 관리</h2>
+              </header>
+
+              <div class="card__body tutor-profile">
+                <div class="tutor-profile__summary">
+                  <div class="tutor-profile__avatar">T</div>
+                  <div class="tutor-profile__info">
+                    <p class="tutor-profile__name">김튜터</p>
+                    <p class="tutor-profile__meta">서울대 수리과학부 · 팀과외 전문</p>
+                  </div>
+                </div>
+
+                <div class="tutor-profile__section">
+                  <h3 class="tutor-profile__section-title">대표 이력 / 학력</h3>
+                  <p class="tutor-profile__text">대표 이력 텍스트 자리 (나중에 실제 데이터로 대체)</p>
+                  <button class="btn btn--secondary" type="button" data-action="edit-profile">
+                    프로필 수정
+                  </button>
+                </div>
+
+                <div class="tutor-profile__section">
+                  <h3 class="tutor-profile__section-title">맛보기 강의</h3>
+                  <p class="tutor-profile__text">짧은 인트로 영상이나 수업 클립을 업로드할 수 있습니다.</p>
+                  <button class="btn btn--secondary" type="button" data-action="upload-demo-video">
+                    맛보기 영상 업로드
+                  </button>
+                </div>
+
+                <div class="tutor-profile__section">
+                  <h3 class="tutor-profile__section-title">모집 공고 관리</h3>
+                  <button class="btn btn--primary" type="button" data-action="manage-recruit-posts">
+                    내 팀 모집 공고 관리
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+
+        </section>
+
+        <!-- ========== [튜터] 클래스 관리 탭 ========== -->
+        <section id="tutor-classes" class="tab-panel" data-tab-panel="tutor-classes" hidden>
+          <section class="card card--class-mode" data-block="tutor-class-mode">
+            <header class="card__header">
+              <h2 class="card__title">수업 모드 (3분 입력으로 리포트 완료)</h2>
+              <p class="card__meta">수업이 끝난 직후, 출결/점수/특이사항만 입력하면 자동으로 리포트가 생성됩니다.</p>
+            </header>
+
+            <div class="card__body class-mode">
+              <!-- 단계 표시 (stepper) -->
+              <ol class="class-mode__steps">
+                <li class="class-mode__step class-mode__step--active" data-step="1">1. 출결</li>
+                <li class="class-mode__step" data-step="2">2. 테스트 점수</li>
+                <li class="class-mode__step" data-step="3">3. 특이사항</li>
+                <li class="class-mode__step" data-step="4">4. 리포트 전송</li>
+              </ol>
+
+              <!-- Step 1: 출결 -->
+              <div class="class-mode__panel class-mode__panel--active" data-step="1">
+                <h3 class="class-mode__title">1. 출결 체크</h3>
+                <p class="class-mode__desc">학생별로 출석/지각/결석을 선택하세요.</p>
+
+                <div class="class-mode__students">
+                  <div class="class-student-row">
+                    <span class="class-student-row__name">홍길동</span>
+                    <div class="class-student-row__actions">
+                      <button class="chip chip--outline" data-attendance="present">출석</button>
+                      <button class="chip chip--outline" data-attendance="late">지각</button>
+                      <button class="chip chip--outline" data-attendance="absent">결석</button>
+                    </div>
+                  </div>
+                  <div class="class-student-row">
+                    <span class="class-student-row__name">김철수</span>
+                    <div class="class-student-row__actions">
+                      <button class="chip chip--outline" data-attendance="present">출석</button>
+                      <button class="chip chip--outline" data-attendance="late">지각</button>
+                      <button class="chip chip--outline" data-attendance="absent">결석</button>
+                    </div>
+                  </div>
+                  <div class="class-student-row">
+                    <span class="class-student-row__name">이영희</span>
+                    <div class="class-student-row__actions">
+                      <button class="chip chip--outline" data-attendance="present">출석</button>
+                      <button class="chip chip--outline" data-attendance="late">지각</button>
+                      <button class="chip chip--outline" data-attendance="absent">결석</button>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="btn btn--primary class-mode__next" type="button" data-action="class-next-step">
+                  다음 (테스트 점수 입력) →
+                </button>
+              </div>
+
+              <!-- Step 2: 테스트 점수 입력 -->
+              <div class="class-mode__panel" data-step="2" hidden>
+                <h3 class="class-mode__title">2. 테스트 점수 입력</h3>
+                <p class="class-mode__desc">이번 수업/주간 테스트 점수를 입력하면 평균과 등수가 자동 계산됩니다.</p>
+
+                <div class="class-mode__students">
+                  <div class="class-student-row">
+                    <span class="class-student-row__name">홍길동</span>
+                    <input type="number" class="class-student-row__input" placeholder="점수 입력" value="85" />
+                  </div>
+                  <div class="class-student-row">
+                    <span class="class-student-row__name">김철수</span>
+                    <input type="number" class="class-student-row__input" placeholder="점수 입력" value="90" />
+                  </div>
+                  <div class="class-student-row">
+                    <span class="class-student-row__name">이영희</span>
+                    <input type="number" class="class-student-row__input" placeholder="점수 입력" value="80" />
+                  </div>
+                </div>
+
+                <!-- 나중에 평균/등수 표시 영역 -->
+                <div class="class-mode__summary">
+                  <p>팀 평균: 85점 · 상위권: 2명 · 중위권: 3명 · 하위권: 1명 (예시 자리)</p>
+                </div>
+
+                <div class="class-mode__nav">
+                  <button class="btn btn--ghost" type="button" data-action="class-prev-step">← 이전</button>
+                  <button class="btn btn--primary" type="button" data-action="class-next-step">다음 (특이사항 선택) →</button>
+                </div>
+              </div>
+
+              <!-- Step 3: 특이사항 태그 선택 -->
+              <div class="class-mode__panel" data-step="3" hidden>
+                <h3 class="class-mode__title">3. 특이사항 선택</h3>
+                <p class="class-mode__desc">간단한 태그만 선택해도 리포트 문장이 자동 생성됩니다.</p>
+
+                <div class="class-mode__tags">
+                  <button class="chip" data-tag="focus-good">집중도 좋음</button>
+                  <button class="chip" data-tag="homework-poor">숙제 미흡</button>
+                  <button class="chip" data-tag="test-improved">테스트 성적 향상</button>
+                  <button class="chip" data-tag="needs-review">개념 복습 필요</button>
+                  <button class="chip" data-tag="participation-active">적극적 참여</button>
+                  <button class="chip" data-tag="needs-attention">관심 필요</button>
+                </div>
+
+                <div class="class-mode__nav">
+                  <button class="btn btn--ghost" type="button" data-action="class-prev-step">← 이전</button>
+                  <button class="btn btn--primary" type="button" data-action="class-next-step">다음 (리포트 전송) →</button>
+                </div>
+              </div>
+
+              <!-- Step 4: 리포트 전송 -->
+              <div class="class-mode__panel" data-step="4" hidden>
+                <h3 class="class-mode__title">4. 리포트 전송</h3>
+                <p class="class-mode__desc">입력한 정보를 바탕으로 학부모용 리포트가 자동 생성됩니다.</p>
+
+                <div class="class-mode__preview">
+                  <div class="chart-placeholder">리포트 미리보기 자리</div>
+                </div>
+
+                <div class="class-mode__nav">
+                  <button class="btn btn--ghost" type="button" data-action="class-prev-step">← 이전</button>
+                  <button class="btn btn--primary" type="button" data-action="send-report">
+                    리포트 전송하기
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </section>
+
+        <!-- ========== [튜터] 스케줄 · 자료 탭 ========== -->
+        <section id="tutor-schedule" class="tab-panel" data-tab-panel="tutor-schedule" hidden>
+          <div class="grid grid--two-columns">
+            <!-- 일정 관리 카드 -->
+            <section class="card card--tutor-schedule" data-block="tutor-schedule">
+              <header class="card__header">
+                <h2 class="card__title">수업 일정 관리</h2>
+              </header>
+
+              <div class="card__body tutor-schedule">
+                <div class="calendar-placeholder">
+                  캘린더 뷰 자리 (주/월 단위)
+                </div>
+
+                <div class="tutor-schedule__actions">
+                  <button class="btn btn--primary" type="button" data-action="reserve-room">
+                    장소 예약 (제휴 스터디룸)
+                  </button>
+                  <button class="btn btn--secondary" type="button" data-action="notify-time-change">
+                    시간 변경 공지 보내기
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            <!-- DRM 자료실 카드 -->
+            <section class="card card--tutor-library" data-block="tutor-library">
+              <header class="card__header">
+                <h2 class="card__title">DRM 자료실</h2>
+                <p class="card__meta">기출, 기출변형, 학교별 자료, 시대인재 콘텐츠 등을 DRM으로 제공.</p>
+              </header>
+
+              <div class="card__body tutor-library">
+                <div class="tutor-library__balance">
+                  <p>보유 캐시: <strong>12,500 캐시</strong></p>
+                </div>
+
+                <div class="tutor-library__list">
+                  <article class="library-item">
+                    <h3 class="library-item__title">2025 수능 수학 가형 기출 모음</h3>
+                    <p class="library-item__meta">DRM 뷰어 전용 · 3,000 캐시</p>
+                    <div class="library-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="preview-material">
+                        미리보기
+                      </button>
+                      <button class="btn btn--primary" type="button" data-action="purchase-material">
+                        구매 후 우리 반 배포
+                      </button>
+                    </div>
+                  </article>
+
+                  <article class="library-item">
+                    <h3 class="library-item__title">서울대 기출 변형 문제집</h3>
+                    <p class="library-item__meta">DRM 뷰어 전용 · 2,500 캐시</p>
+                    <div class="library-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="preview-material">
+                        미리보기
+                      </button>
+                      <button class="btn btn--primary" type="button" data-action="purchase-material">
+                        구매 후 우리 반 배포
+                      </button>
+                    </div>
+                  </article>
+                </div>
+
+                <div class="tutor-library__notice">
+                  <p class="tutor-library__notice-text">
+                    <small>※ DRM 자료는 다운로드 가능하지만 외부 반출이 불가합니다. 학생들에게만 배포 가능합니다.</small>
+                  </p>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ========== [튜터] 알림센터 탭 ========== -->
+        <section id="tutor-notifications" class="tab-panel" data-tab-panel="tutor-notifications" hidden>
+          <section class="card card--notifications" data-block="tutor-notifications">
+            <header class="card__header">
+              <h2 class="card__title">알림센터</h2>
+            </header>
+            <div class="card__body">
+              <div class="notifications__list">
+                <article class="notification-item">
+                  <p class="notification-item__type">급여 지급 완료</p>
+                  <p class="notification-item__text">이번 달 급여가 지급되었습니다. (₩3,850,000)</p>
+                  <p class="notification-item__time">1시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">새 학생 매칭</p>
+                  <p class="notification-item__text">새로운 학생이 팀에 매칭되었습니다. 프로필을 확인해주세요.</p>
+                  <p class="notification-item__time">5시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">리포트 작성 알림</p>
+                  <p class="notification-item__text">이번 주 리포트 작성 기한이 2일 남았습니다.</p>
+                  <p class="notification-item__time">1일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">수업 일정 변경 요청</p>
+                  <p class="notification-item__text">학생이 수업 일정 변경을 요청했습니다.</p>
+                  <p class="notification-item__time">2일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">등급 업데이트</p>
+                  <p class="notification-item__text">튜터 등급이 A등급으로 상승했습니다.</p>
+                  <p class="notification-item__time">3일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">보강 신청</p>
+                  <p class="notification-item__text">학생이 보강 수업을 신청했습니다.</p>
+                  <p class="notification-item__time">4일 전</p>
+                </article>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- ===============================
+           4) 관리자 모드 대시보드
+           (기본은 숨김, admin 모드에서 표시)
+      ================================ -->
+      <section class="dashboard dashboard--admin" data-role="admin" hidden>
+        <!-- 관리자 모드 상단 탭: 튜터·수업 관리 / 오퍼레이션 정산 / 매칭 관리 / 알림센터 -->
+        <nav class="tab-nav" data-component="admin-tabs">
+          <button class="tab-nav__btn tab-nav__btn--active" data-tab="admin-tutors">
+            튜터 · 수업 관리
+          </button>
+          <button class="tab-nav__btn" data-tab="admin-operations">
+            오퍼레이션 정산
+          </button>
+          <button class="tab-nav__btn" data-tab="admin-matching">
+            매칭 관리
+          </button>
+          <button class="tab-nav__btn" data-tab="admin-notifications">
+            알림센터
+          </button>
+        </nav>
+
+        <!-- ========== [관리자] 튜터·수업 관리 탭 ========== -->
+        <section id="admin-tutors" class="tab-panel tab-panel--active" data-tab-panel="admin-tutors">
+          <div class="grid grid--two-columns">
+            <!-- 튜터 등급 현황 카드 -->
+            <section class="card card--admin-tutor-grade" data-block="admin-tutor-grade">
+              <header class="card__header">
+                <h2 class="card__title">튜터 등급 현황</h2>
+                <p class="card__meta">유지율(40%) + 성적 향상(30%) + 반 규모(30%)로 자동 산정된 등급입니다.</p>
+              </header>
+
+              <div class="card__body admin-tutor-grade">
+                <div class="admin-tutor-grade__chart">
+                  <canvas id="admin-tutor-grade-chart"></canvas>
+                </div>
+
+                <div class="admin-tutor-grade__legend">
+                  <p class="admin-tutor-grade__legend-title">등급 산정 요소:</p>
+                  <ul class="admin-tutor-grade__legend-list">
+                    <li>수강 유지율: 40%</li>
+                    <li>성적 향상도: 30%</li>
+                    <li>반 개수/학생 수: 30%</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <!-- 리포트 품질 모니터링 카드 -->
+            <section class="card card--admin-report-quality" data-block="admin-report-quality">
+              <header class="card__header">
+                <h2 class="card__title">리포트 품질 모니터링</h2>
+              </header>
+
+              <div class="card__body admin-report-quality">
+                <ul class="admin-alert-list">
+                  <li class="admin-alert-item">
+                    <div class="admin-alert-item__text">
+                      튜터 A님의 리포트 작성 빈도가 낮습니다. (최근 2주 미작성)
+                    </div>
+                    <div class="admin-alert-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="send-warning">
+                        경고 알림 발송
+                      </button>
+                    </div>
+                  </li>
+                  <li class="admin-alert-item">
+                    <div class="admin-alert-item__text">
+                      튜터 B님의 리포트 평균 길이가 기준보다 짧습니다.
+                    </div>
+                    <div class="admin-alert-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="send-warning">
+                        경고 알림 발송
+                      </button>
+                    </div>
+                  </li>
+                  <li class="admin-alert-item">
+                    <div class="admin-alert-item__text">
+                      튜터 C님의 리포트 내용이 템플릿과 유사도가 높습니다.
+                    </div>
+                    <div class="admin-alert-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="send-warning">
+                        경고 알림 발송
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+          </div>
+
+          <!-- 인센티브 설정 카드 (전체 폭) -->
+          <section class="card card--admin-incentives" data-block="admin-incentives">
+            <header class="card__header">
+              <h2 class="card__title">튜터 인센티브 설정</h2>
+              <p class="card__meta">등급별 보너스와 상위 노출 가중치를 조정합니다.</p>
+            </header>
+
+            <div class="card__body admin-incentives">
+              <table class="admin-incentives__table">
+                <thead>
+                  <tr>
+                    <th>등급</th>
+                    <th>보너스율</th>
+                    <th>상위 노출 가중치</th>
+                    <th>추천 우선 순위</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>S</strong></td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="20" min="0" max="100" />
+                        <span>%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="3.0" step="0.1" min="0" />
+                      </div>
+                    </td>
+                    <td>1순위</td>
+                  </tr>
+                  <tr>
+                    <td><strong>A</strong></td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="10" min="0" max="100" />
+                        <span>%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="2.0" step="0.1" min="0" />
+                      </div>
+                    </td>
+                    <td>2순위</td>
+                  </tr>
+                  <tr>
+                    <td><strong>B</strong></td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="5" min="0" max="100" />
+                        <span>%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="1.0" step="0.1" min="0" />
+                      </div>
+                    </td>
+                    <td>3순위</td>
+                  </tr>
+                  <tr>
+                    <td><strong>C</strong></td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="0" min="0" max="100" />
+                        <span>%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="admin-incentives__input-wrapper">
+                        <input type="number" class="admin-incentives__input" value="0.5" step="0.1" min="0" />
+                      </div>
+                    </td>
+                    <td>후순위</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="admin-incentives__actions">
+                <button class="btn btn--primary" type="button" data-action="save-incentives">
+                  변경 사항 저장
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ========== [관리자] 오퍼레이션 정산 탭 ========== -->
+        <section id="admin-operations" class="tab-panel" data-tab-panel="admin-operations" hidden>
+          <div class="grid grid--two-columns">
+            <!-- 결제 모니터링 카드 -->
+            <section class="card card--admin-pay-monitor" data-block="admin-pay-monitor">
+              <header class="card__header">
+                <h2 class="card__title">결제 · 수업 모니터링</h2>
+                <p class="card__meta">팀별 인원, 결제 상태, 결석율을 한눈에 확인합니다.</p>
+              </header>
+
+              <div class="card__body admin-pay-monitor">
+                <ul class="admin-alert-list">
+                  <li class="admin-alert-item admin-alert-item--danger">
+                    <div class="admin-alert-item__text">
+                      <strong>위험:</strong> XX팀(수학) 인원 4명 → 3명 변경 후 결제 정보 미갱신.
+                    </div>
+                    <div class="admin-alert-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="open-team-billing">
+                        팀 결제 정보 확인
+                      </button>
+                    </div>
+                  </li>
+                  <li class="admin-alert-item admin-alert-item--warning">
+                    <div class="admin-alert-item__text">
+                      <strong>경고:</strong> C팀 최근 결석률 30% 초과 (팀 와해 위험).
+                    </div>
+                    <div class="admin-alert-item__actions">
+                      <button class="btn btn--secondary" type="button" data-action="open-attendance-detail">
+                        출결 상세 보기
+                      </button>
+                    </div>
+                  </li>
+                  <li class="admin-alert-item">
+                    <div class="admin-alert-item__text">
+                      알림: D팀 결제 예정일이 3일 남았습니다.
+                    </div>
+                    <div class="admin-alert-item__actions">
+                      <button class="btn btn--ghost" type="button" data-action="view-payment-schedule">
+                        결제 일정 보기
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 자동 정산 센터 카드 -->
+            <section class="card card--admin-settlement" data-block="admin-settlement">
+              <header class="card__header">
+                <h2 class="card__title">자동 정산 센터</h2>
+              </header>
+
+              <div class="card__body admin-settlement">
+                <div class="admin-settlement__summary">
+                  <div class="admin-settlement__item">
+                    <span class="admin-settlement__label">이번 달 총 결제액</span>
+                    <span class="admin-settlement__value admin-settlement__value--total">₩128,000,000</span>
+                  </div>
+                  <div class="admin-settlement__item">
+                    <span class="admin-settlement__label">튜터 지급 예정액</span>
+                    <span class="admin-settlement__value">₩85,000,000</span>
+                  </div>
+                  <div class="admin-settlement__item">
+                    <span class="admin-settlement__label">플랫폼 수익</span>
+                    <span class="admin-settlement__value admin-settlement__value--profit">₩35,000,000</span>
+                  </div>
+                  <div class="admin-settlement__item">
+                    <span class="admin-settlement__label">세금 예수금 (3.3%)</span>
+                    <span class="admin-settlement__value">₩8,000,000</span>
+                  </div>
+                </div>
+
+                <div class="admin-settlement__actions">
+                  <button class="btn btn--primary" type="button" data-action="run-settlement">
+                    정산 실행 (오류 없는 건 일괄 이체)
+                  </button>
+                </div>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ========== [관리자] 매칭 관리 탭 ========== -->
+        <section id="admin-matching" class="tab-panel" data-tab-panel="admin-matching" hidden>
+          <section class="card card--admin-matching" data-block="admin-matching">
+            <header class="card__header">
+              <h2 class="card__title">매칭 현황</h2>
+              <p class="card__meta">대기 학생과 가용 튜터를 비교하여 최적 팀 구성을 제안합니다.</p>
+            </header>
+
+            <div class="card__body admin-matching">
+              <div class="admin-matching__columns">
+                <div class="admin-matching__column">
+                  <h3 class="admin-matching__subtitle">대기 학생 리스트</h3>
+                  <ul class="admin-list">
+                    <li class="admin-list__item">
+                      <strong>홍길동</strong> · 고2 · 수학 2등급 · 가능 시간: 토 19시
+                    </li>
+                    <li class="admin-list__item">
+                      <strong>김철수</strong> · 고1 · 수학 3등급 · 가능 시간: 일 14시
+                    </li>
+                    <li class="admin-list__item">
+                      <strong>이영희</strong> · 고3 · 수학 1등급 · 가능 시간: 토 15시
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="admin-matching__column">
+                  <h3 class="admin-matching__subtitle">가용 튜터 리스트</h3>
+                  <ul class="admin-list">
+                    <li class="admin-list__item">
+                      <strong>김튜터</strong> · 수학 · 현재 2팀 운영 · 토 19시 가능
+                    </li>
+                    <li class="admin-list__item">
+                      <strong>박튜터</strong> · 수학 · 현재 1팀 운영 · 일 14시 가능
+                    </li>
+                    <li class="admin-list__item">
+                      <strong>최튜터</strong> · 수학 · 현재 3팀 운영 · 토 15시 가능
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="admin-matching__suggestions">
+                <h3 class="admin-matching__subtitle">추천 팀 후보</h3>
+                <div class="admin-matching__suggestions-list">
+                  <div class="admin-suggestion-item">
+                    <div class="admin-suggestion-item__header">
+                      <h4 class="admin-suggestion-item__title">후보 1: 홍길동 + 김튜터 팀</h4>
+                      <span class="admin-suggestion-item__score">매칭 점수: 95점</span>
+                    </div>
+                    <div class="admin-suggestion-item__details">
+                      <p>학교: 숙명여고 · 거리: 1.2km · 레벨: 2등급 · 시간대: 토 19시 일치</p>
+                    </div>
+                    <div class="admin-suggestion-item__actions">
+                      <button class="btn btn--primary" type="button" data-action="approve-matching">
+                        매칭 승인
+                      </button>
+                      <button class="btn btn--secondary" type="button" data-action="view-matching-detail">
+                        상세 보기
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="admin-suggestion-item">
+                    <div class="admin-suggestion-item__header">
+                      <h4 class="admin-suggestion-item__title">후보 2: 김철수 + 박튜터 팀</h4>
+                      <span class="admin-suggestion-item__score">매칭 점수: 88점</span>
+                    </div>
+                    <div class="admin-suggestion-item__details">
+                      <p>학교: 휘문고 · 거리: 2.5km · 레벨: 3등급 · 시간대: 일 14시 일치</p>
+                    </div>
+                    <div class="admin-suggestion-item__actions">
+                      <button class="btn btn--primary" type="button" data-action="approve-matching">
+                        매칭 승인
+                      </button>
+                      <button class="btn btn--secondary" type="button" data-action="view-matching-detail">
+                        상세 보기
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ========== [관리자] 알림센터 탭 ========== -->
+        <section id="admin-notifications" class="tab-panel" data-tab-panel="admin-notifications" hidden>
+          <section class="card card--notifications" data-block="admin-notifications">
+            <header class="card__header">
+              <h2 class="card__title">알림센터</h2>
+            </header>
+            <div class="card__body">
+              <div class="notifications__list">
+                <article class="notification-item notification-item--danger">
+                  <p class="notification-item__type">긴급: 결제 오류</p>
+                  <p class="notification-item__text">XX팀 결제 정보 미갱신으로 인한 환불 요청이 발생했습니다.</p>
+                  <p class="notification-item__time">10분 전</p>
+                </article>
+                <article class="notification-item notification-item--warning">
+                  <p class="notification-item__type">경고: 튜터 리포트 미작성</p>
+                  <p class="notification-item__text">3명의 튜터가 최근 2주간 리포트를 작성하지 않았습니다.</p>
+                  <p class="notification-item__time">1시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">정산 완료</p>
+                  <p class="notification-item__text">이번 달 정산이 완료되었습니다. 총 45명의 튜터에게 급여가 지급되었습니다.</p>
+                  <p class="notification-item__time">3시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">새 튜터 등록</p>
+                  <p class="notification-item__text">새로운 튜터가 등록되었습니다. 프로필을 검토해주세요.</p>
+                  <p class="notification-item__time">5시간 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">매칭 대기 증가</p>
+                  <p class="notification-item__text">대기 중인 학생이 5명 증가했습니다. 매칭을 진행해주세요.</p>
+                  <p class="notification-item__time">1일 전</p>
+                </article>
+                <article class="notification-item">
+                  <p class="notification-item__type">시스템 업데이트</p>
+                  <p class="notification-item__text">튜터 등급 산정 알고리즘이 업데이트되었습니다.</p>
+                  <p class="notification-item__time">2일 전</p>
+                </article>
+              </div>
+            </div>
+          </section>
+        </section>
+      </section>
+
+    </main>
+
+    <!-- =========================================
+         알림 센터 (오버레이/사이드패널)
+    ========================================== -->
+    <aside class="notifications" data-component="notifications" hidden>
+      <header class="notifications__header">
+        <h2 class="notifications__title">알림 센터</h2>
+        <button class="icon-button" type="button" data-action="close-notifications">✕</button>
+      </header>
+
+      <div class="notifications__list">
+        <!-- 예시 알림들 -->
+        <article class="notification-item">
+          <p class="notification-item__type">리포트 업데이트</p>
+          <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
+          <p class="notification-item__time">2시간 전</p>
+        </article>
+
+        <article class="notification-item">
+          <p class="notification-item__type">결제 변동</p>
+          <p class="notification-item__text">새 팀원 합류로 이번 달 결제 금액이 변경되었습니다.</p>
+          <p class="notification-item__time">1일 전</p>
+        </article>
+
+        <article class="notification-item">
+          <p class="notification-item__type">수업 긴급 공지</p>
+          <p class="notification-item__text">이번 주 토요일 수업 시간이 30분 앞당겨집니다.</p>
+          <p class="notification-item__time">3일 전</p>
+        </article>
+
+        <article class="notification-item">
+          <p class="notification-item__type">팀원 변동</p>
+          <p class="notification-item__text">김철수 학생이 팀에 합류했습니다.</p>
+          <p class="notification-item__time">5일 전</p>
+        </article>
+
+        <article class="notification-item">
+          <p class="notification-item__type">과제 제출</p>
+          <p class="notification-item__text">오늘 과제가 제출되었습니다. 인증샷을 확인하세요.</p>
+          <p class="notification-item__time">1주 전</p>
+        </article>
+      </div>
+    </aside>
+
+    <!-- =========================================
+         푸터 (필요하면)
+    ========================================== -->
+    <footer class="app-footer">
+      <p>© 2025 Uni-T 팀과외</p>
+    </footer>
+
+  </div>
+
+  <!-- 메인 스크립트 (나중에 작성) -->
+  <script src="./scripts/main.js"></script>
+</body>
+</html>
