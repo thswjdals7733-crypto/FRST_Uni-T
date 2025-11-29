@@ -659,6 +659,19 @@ p {
   margin-top: 8px;
 }
 
+.billing-status__next-date {
+  font-size: 15px;
+  color: var(--text-main);
+  margin: 12px 0 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--bg-gray-3);
+}
+
+.billing-status__next-date strong {
+  color: var(--primary-dark);
+  font-weight: 600;
+}
+
 .billing-status__history,
 .billing-status__settings {
   margin-top: 8px;
@@ -694,6 +707,27 @@ p {
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.billing-status__team-management {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--bg-gray-3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn--danger {
+  background-color: transparent;
+  border: 1px solid #EF4444;
+  color: #EF4444;
+}
+
+.btn--danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-color: #DC2626;
+  color: #DC2626;
 }
 
 /* ============================================
@@ -740,6 +774,158 @@ p {
 }
 
 .team-card {
+  padding: 24px;
+  background-color: var(--bg-gray-1);
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.2s ease;
+}
+
+.team-card:hover {
+  background-color: var(--bg-white);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(4, 89, 240, 0.1);
+}
+
+.team-card--recommended {
+  border: 2px solid var(--primary);
+  background: linear-gradient(135deg, rgba(4, 89, 240, 0.05) 0%, rgba(0, 43, 92, 0.02) 100%);
+}
+
+.team-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.team-card__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.team-card__badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.team-card__badge--available {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+}
+
+.team-card__badge--recommended {
+  background-color: var(--primary);
+  color: var(--bg-white);
+}
+
+.team-card__meta {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.team-card__description {
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.team-card__info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--bg-gray-3);
+  border-bottom: 1px solid var(--bg-gray-3);
+}
+
+.team-card__info-item {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.team-card__actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.team-board__new {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--bg-gray-3);
+  text-align: center;
+}
+
+/* 학생 모드 매칭 */
+.student-matching {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.student-matching__filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.student-matching__filter {
+  padding: 10px 16px;
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: var(--bg-white);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 150px;
+}
+
+.student-matching__filter:hover {
+  border-color: var(--primary);
+}
+
+.student-matching__filter:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(4, 89, 240, 0.1);
+}
+
+.student-matching__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 가입 신청 현황 */
+.student-applications {
+  display: flex;
+  flex-direction: column;
+}
+
+.student-applications__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.application-item {
   padding: 20px;
   background-color: var(--bg-gray-1);
   border: 1px solid var(--bg-gray-3);
@@ -749,27 +935,55 @@ p {
   gap: 12px;
 }
 
-.team-card__title {
+.application-item__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.application-item__title {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-main);
   margin: 0;
+  flex: 1;
 }
 
-.team-card__meta {
+.application-item__status {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.application-item__status--pending {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #F59E0B;
+}
+
+.application-item__status--approved {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+}
+
+.application-item__status--rejected {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+}
+
+.application-item__meta {
   font-size: 13px;
   color: var(--text-muted);
   margin: 0;
 }
 
-.team-card__actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.team-board__new {
-  margin-top: 8px;
+.application-item__text {
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin: 0;
 }
 
 /* ============================================
@@ -789,14 +1003,20 @@ p {
   flex-direction: column;
   transform: translateX(100%);
   transition: transform 0.3s ease;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .notifications:not([hidden]) {
   transform: translateX(0);
+  visibility: visible;
+  opacity: 1;
 }
 
 .notifications[hidden] {
-  display: none;
+  transform: translateX(100%);
+  visibility: hidden;
+  opacity: 0;
 }
 
 .notifications__header {
@@ -853,6 +1073,18 @@ p {
   font-size: 12px;
   color: var(--text-muted);
   margin: 4px 0 0 0;
+}
+
+.notification-item--danger {
+  border-left: 4px solid #EF4444;
+  padding-left: 12px;
+  background-color: rgba(239, 68, 68, 0.03);
+}
+
+.notification-item--warning {
+  border-left: 4px solid #F59E0B;
+  padding-left: 12px;
+  background-color: rgba(245, 158, 11, 0.03);
 }
 
 /* 알림센터 탭용 스타일 (카드 내부) */
@@ -1403,6 +1635,26 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+}
+
+.class-student-row--notes {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+}
+
+.class-student-row__header {
+  width: 100%;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--bg-gray-3);
+}
+
+.class-student-row__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
 }
 
 .class-mode__preview {

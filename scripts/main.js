@@ -510,56 +510,186 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================
-  // 4. 알림 센터 열기/닫기 (탭으로 이동)
+  // 4. 알림 센터 열기/닫기 (사이드패널)
   // ============================================
-  const openNotificationsBtn = document.querySelector('[data-action="open-notifications"]');
-  
-  if (openNotificationsBtn) {
-    openNotificationsBtn.addEventListener('click', function() {
-      // 현재 활성화된 대시보드 확인
-      const activeDashboard = document.querySelector('.dashboard:not([hidden])');
-      if (!activeDashboard) return;
-      
-      const role = activeDashboard.getAttribute('data-role');
-      let targetTab = '';
-      let tabComponent = '';
-      
-      // 모듈별 알림센터 탭 찾기
-      if (role === 'student') {
-        targetTab = 'student-notifications';
-        tabComponent = 'student-tabs';
-      } else if (role === 'parent') {
-        targetTab = 'parent-notifications';
-        tabComponent = 'parent-tabs';
-      } else if (role === 'tutor') {
-        targetTab = 'tutor-notifications';
-        tabComponent = 'tutor-tabs';
-      } else if (role === 'admin') {
-        targetTab = 'admin-notifications';
-        tabComponent = 'admin-tabs';
-      }
-      
-      if (targetTab && tabComponent) {
-        // 해당 탭 버튼 찾아서 클릭
-        const tabs = document.querySelector(`[data-component="${tabComponent}"]`);
-        if (tabs) {
-          const tabButton = tabs.querySelector(`[data-tab="${targetTab}"]`);
-          if (tabButton) {
-            tabButton.click();
-          }
-        }
-      }
-    });
-  }
-  
-  // 사이드패널 알림센터 (기존 기능 유지)
   const notifications = document.querySelector('[data-component="notifications"]');
+  const openNotificationsBtn = document.querySelector('[data-action="open-notifications"]');
   const closeNotificationsBtn = document.querySelector('[data-action="close-notifications"]');
   
+  // 알림센터 열기 (사이드패널)
+  if (openNotificationsBtn && notifications) {
+    openNotificationsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      
+      // 현재 활성화된 대시보드 확인하여 알림 내용 업데이트
+      const activeDashboard = document.querySelector('.dashboard:not([hidden])');
+      if (activeDashboard) {
+      const role = activeDashboard.getAttribute('data-role');
+        updateNotificationsContent(role);
+      }
+      
+      // 사이드패널 열기
+      notifications.removeAttribute('hidden');
+      
+      return false;
+    }, true); // capture phase에서 먼저 실행
+  }
+  
+  // 알림센터 닫기
   if (closeNotificationsBtn && notifications) {
     closeNotificationsBtn.addEventListener('click', function() {
       notifications.setAttribute('hidden', '');
     });
+  }
+  
+  // 배경 클릭 시 닫기
+  if (notifications) {
+    notifications.addEventListener('click', function(e) {
+      if (e.target === notifications) {
+        notifications.setAttribute('hidden', '');
+      }
+    });
+  }
+  
+  // 모듈별 알림 내용 업데이트 함수
+  function updateNotificationsContent(role) {
+    const notificationsList = notifications.querySelector('.notifications__list');
+    if (!notificationsList) return;
+    
+    let notificationsHTML = '';
+    
+    if (role === 'student') {
+      notificationsHTML = `
+        <article class="notification-item">
+          <p class="notification-item__type">과제 제출 완료</p>
+          <p class="notification-item__text">오늘 과제가 제출되었습니다. 튜터 확인 중입니다.</p>
+          <p class="notification-item__time">30분 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">수업 일정 변경</p>
+          <p class="notification-item__text">이번 주 토요일 수업 시간이 19시로 변경되었습니다.</p>
+          <p class="notification-item__time">2시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">월간 리포트 업데이트</p>
+          <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
+          <p class="notification-item__time">1일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">보강 신청 승인</p>
+          <p class="notification-item__text">보강 신청이 승인되었습니다. 일정을 확인해주세요.</p>
+          <p class="notification-item__time">2일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">테스트 결과</p>
+          <p class="notification-item__text">주간 테스트 결과가 업로드되었습니다.</p>
+          <p class="notification-item__time">3일 전</p>
+        </article>
+      `;
+    } else if (role === 'parent') {
+      notificationsHTML = `
+        <article class="notification-item">
+          <p class="notification-item__type">리포트 업데이트</p>
+          <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
+          <p class="notification-item__time">2시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">결제 변동</p>
+          <p class="notification-item__text">새 팀원 합류로 이번 달 결제 금액이 변경되었습니다.</p>
+          <p class="notification-item__time">1일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">수업 긴급 공지</p>
+          <p class="notification-item__text">이번 주 토요일 수업 시간이 30분 앞당겨집니다.</p>
+          <p class="notification-item__time">3일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">팀원 변동</p>
+          <p class="notification-item__text">김철수 학생이 팀에 합류했습니다.</p>
+          <p class="notification-item__time">5일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">과제 제출</p>
+          <p class="notification-item__text">오늘 과제가 제출되었습니다. 인증샷을 확인하세요.</p>
+          <p class="notification-item__time">1주 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">결제 예정 알림</p>
+          <p class="notification-item__text">다음 달 결제일이 3일 남았습니다.</p>
+          <p class="notification-item__time">1주 전</p>
+        </article>
+      `;
+    } else if (role === 'tutor') {
+      notificationsHTML = `
+        <article class="notification-item">
+          <p class="notification-item__type">급여 지급 완료</p>
+          <p class="notification-item__text">이번 달 급여가 지급되었습니다. (₩3,850,000)</p>
+          <p class="notification-item__time">1시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">새 학생 매칭</p>
+          <p class="notification-item__text">새로운 학생이 팀에 매칭되었습니다. 프로필을 확인해주세요.</p>
+          <p class="notification-item__time">5시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">리포트 작성 알림</p>
+          <p class="notification-item__text">이번 주 리포트 작성 기한이 2일 남았습니다.</p>
+          <p class="notification-item__time">1일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">수업 일정 변경 요청</p>
+          <p class="notification-item__text">학생이 수업 일정 변경을 요청했습니다.</p>
+          <p class="notification-item__time">2일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">등급 업데이트</p>
+          <p class="notification-item__text">튜터 등급이 A등급으로 상승했습니다.</p>
+          <p class="notification-item__time">3일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">보강 신청</p>
+          <p class="notification-item__text">학생이 보강 수업을 신청했습니다.</p>
+          <p class="notification-item__time">4일 전</p>
+        </article>
+      `;
+    } else if (role === 'admin') {
+      notificationsHTML = `
+        <article class="notification-item notification-item--danger">
+          <p class="notification-item__type">긴급: 결제 오류</p>
+          <p class="notification-item__text">XX팀 결제 정보 미갱신으로 인한 환불 요청이 발생했습니다.</p>
+          <p class="notification-item__time">10분 전</p>
+        </article>
+        <article class="notification-item notification-item--warning">
+          <p class="notification-item__type">경고: 튜터 리포트 미작성</p>
+          <p class="notification-item__text">3명의 튜터가 최근 2주간 리포트를 작성하지 않았습니다.</p>
+          <p class="notification-item__time">1시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">정산 완료</p>
+          <p class="notification-item__text">이번 달 정산이 완료되었습니다. 총 45명의 튜터에게 급여가 지급되었습니다.</p>
+          <p class="notification-item__time">3시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">새 튜터 등록</p>
+          <p class="notification-item__text">새로운 튜터가 등록되었습니다. 프로필을 검토해주세요.</p>
+          <p class="notification-item__time">5시간 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">매칭 대기 증가</p>
+          <p class="notification-item__text">대기 중인 학생이 5명 증가했습니다. 매칭을 진행해주세요.</p>
+          <p class="notification-item__time">1일 전</p>
+        </article>
+        <article class="notification-item">
+          <p class="notification-item__type">시스템 업데이트</p>
+          <p class="notification-item__text">튜터 등급 산정 알고리즘이 업데이트되었습니다.</p>
+          <p class="notification-item__time">2일 전</p>
+        </article>
+      `;
+    }
+    
+    notificationsList.innerHTML = notificationsHTML;
   }
 
   // 알림 센터 외부 클릭 시 닫기
@@ -644,8 +774,23 @@ document.addEventListener('DOMContentLoaded', function() {
   const addBackupCardBtn = document.querySelector('[data-action="add-backup-card"]');
   if (addBackupCardBtn) {
     addBackupCardBtn.addEventListener('click', function() {
-      alert('연체 방지용 예비 카드 등록 페이지로 이동합니다.');
+      alert('예비 카드 등록 페이지로 이동합니다.\n(선택 사항)');
       // 실제로는 예비 카드 등록 폼 모달 또는 페이지로 이동
+    });
+  }
+
+  // ============================================
+  // 8-1. 팀 탈퇴
+  // ============================================
+  const leaveTeamBtn = document.querySelector('[data-action="leave-team"]');
+  if (leaveTeamBtn) {
+    leaveTeamBtn.addEventListener('click', function() {
+      if (confirm('정말 팀에서 탈퇴하시겠습니까?\n\n탈퇴 시 다음 달부터 수업이 중단되며, 환불 정책에 따라 처리됩니다.')) {
+        if (confirm('탈퇴를 확정하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+          alert('팀 탈퇴가 신청되었습니다.\n관리자 확인 후 처리됩니다.');
+          // 실제로는 팀 탈퇴 API 호출
+        }
+      }
     });
   }
 
@@ -930,8 +1075,47 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================
   let currentStep = 1;
   const totalSteps = 4;
+  const completedSteps = new Set([1]); // 1단계는 기본 완료로 간주
+
+  // 단계 완료 여부 확인 함수
+  function isStepCompleted(step) {
+    if (step === 1) {
+      // 출결: 모든 학생의 출결이 선택되었는지 확인
+      const studentRows = document.querySelectorAll('.class-mode__panel[data-step="1"] .class-student-row');
+      for (let row of studentRows) {
+        const hasSelected = row.querySelector('[data-attendance].chip--active');
+        if (!hasSelected) return false;
+      }
+      return true;
+    } else if (step === 2) {
+      // 테스트 점수: 모든 학생의 점수가 입력되었는지 확인
+      const inputs = document.querySelectorAll('.class-mode__panel[data-step="2"] .class-student-row__input');
+      for (let input of inputs) {
+        if (!input.value || input.value.trim() === '') return false;
+      }
+      return true;
+    } else if (step === 3) {
+      // 특이사항: 최소 1명 이상의 학생에게 태그가 선택되었는지 확인 (선택사항이므로 항상 true)
+      return true;
+    } else if (step === 4) {
+      // 리포트 전송: 이전 단계들이 모두 완료되었는지 확인
+      return completedSteps.has(1) && completedSteps.has(2);
+    }
+    return false;
+  }
 
   function updateStep(step) {
+    // 뒤 단계를 클릭한 경우 이전 단계 완료 여부 확인
+    if (step > currentStep) {
+      for (let i = currentStep; i < step; i++) {
+        if (!isStepCompleted(i)) {
+          alert('이전 단계 입력을 먼저 완료해주시기 바랍니다.');
+          return;
+        }
+        completedSteps.add(i);
+      }
+    }
+
     // 모든 패널 숨기기
     const panels = document.querySelectorAll('.class-mode__panel');
     panels.forEach(panel => {
@@ -959,14 +1143,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     currentStep = step;
+    completedSteps.add(step);
   }
 
   // 다음 스텝
   const nextStepBtns = document.querySelectorAll('[data-action="class-next-step"]');
   nextStepBtns.forEach(btn => {
     btn.addEventListener('click', function() {
+      // 현재 단계 완료 여부 확인
+      if (!isStepCompleted(currentStep)) {
+        if (currentStep === 1) {
+          alert('모든 학생의 출결을 선택해주세요.');
+        } else if (currentStep === 2) {
+          alert('모든 학생의 테스트 점수를 입력해주세요.');
+        }
+        return;
+      }
+      
+      completedSteps.add(currentStep);
+      
       if (currentStep < totalSteps) {
         updateStep(currentStep + 1);
+      }
+    });
+  });
+
+  // 단계 클릭으로 직접 이동
+  const stepButtons = document.querySelectorAll('.class-mode__step');
+  stepButtons.forEach(stepBtn => {
+    stepBtn.addEventListener('click', function() {
+      const targetStep = parseInt(this.getAttribute('data-step'));
+      if (targetStep !== currentStep) {
+        updateStep(targetStep);
       }
     });
   });
@@ -996,11 +1204,26 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 클릭한 버튼에만 활성 클래스 추가
       this.classList.add('chip--active');
+      
+      // 1단계 완료 상태 업데이트
+      if (isStepCompleted(1)) {
+        completedSteps.add(1);
+      }
     });
   });
 
-  // 특이사항 태그 선택 (다중 선택 가능)
-  const tagBtns = document.querySelectorAll('.class-mode__tags [data-tag]');
+  // 테스트 점수 입력 시 2단계 완료 상태 업데이트
+  const scoreInputs = document.querySelectorAll('.class-student-row__input');
+  scoreInputs.forEach(input => {
+    input.addEventListener('input', function() {
+      if (isStepCompleted(2)) {
+        completedSteps.add(2);
+      }
+    });
+  });
+
+  // 특이사항 태그 선택 (학생별 다중 선택 가능)
+  const tagBtns = document.querySelectorAll('[data-tag][data-student]');
   tagBtns.forEach(btn => {
     btn.addEventListener('click', function() {
       // 토글 방식으로 활성/비활성 전환
