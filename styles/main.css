@@ -1127,7 +1127,7 @@ p {
 }
 
 .team-board__filter {
-  padding: 8px 12px;
+  padding: 10px 16px;
   border: 1px solid var(--bg-gray-3);
   border-radius: 8px;
   background-color: var(--bg-white);
@@ -1135,7 +1135,9 @@ p {
   color: var(--text-main);
   font-family: inherit;
   cursor: pointer;
-  min-width: 120px;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 150px;
 }
 
 .team-board__filter:hover {
@@ -3012,6 +3014,14 @@ p {
   }
 
   .team-board__filter {
+    width: 100%;
+  }
+
+  .student-matching__filters {
+    flex-direction: column;
+  }
+
+  .student-matching__filter {
     width: 100%;
   }
 
