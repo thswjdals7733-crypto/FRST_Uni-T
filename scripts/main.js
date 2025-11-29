@@ -1396,15 +1396,103 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-      // 리포트 전송
-      const sendReportBtn = document.querySelector('[data-action="send-report"]');
-      if (sendReportBtn) {
-        sendReportBtn.addEventListener('click', function() {
-          if (confirm('리포트를 전송하시겠습니까?')) {
-            alert('리포트가 성공적으로 전송되었습니다.\n학부모 앱에 리포트가 업데이트되었습니다.');
-            // 첫 번째 스텝으로 리셋
-            updateStep(1);
-          }
+      // 리포트 미리보기 버튼
+      const previewReportBtn = document.querySelector('[data-action="preview-report"]');
+      if (previewReportBtn) {
+        previewReportBtn.addEventListener('click', function() {
+          // 입력된 데이터 수집
+          const attendanceData = {};
+          const scoreData = {};
+          const tagData = {};
+          const feedbackData = {};
+
+          // 출결 데이터
+          document.querySelectorAll('.class-mode__panel[data-step="1"] .class-student-row').forEach(row => {
+            const name = row.querySelector('.class-student-row__name').textContent;
+            const selected = row.querySelector('[data-attendance].chip--active');
+            attendanceData[name] = selected ? selected.textContent : '미선택';
+          });
+
+          // 점수 데이터
+          document.querySelectorAll('.class-mode__panel[data-step="2"] .class-student-row').forEach(row => {
+            const name = row.querySelector('.class-student-row__name').textContent;
+            const score = row.querySelector('.class-student-row__input').value;
+            scoreData[name] = score || '미입력';
+          });
+
+          // 태그 데이터
+          document.querySelectorAll('.class-mode__panel[data-step="3"] .class-student-row').forEach(row => {
+            const name = row.querySelector('.class-student-row__name').textContent;
+            const selectedTags = Array.from(row.querySelectorAll('[data-tag].chip--active')).map(btn => btn.textContent);
+            tagData[name] = selectedTags.length > 0 ? selectedTags.join(', ') : '없음';
+          });
+
+          // 피드백 데이터
+          document.querySelectorAll('.class-mode__panel[data-step="4"] .class-student-row__feedback').forEach(textarea => {
+            const name = textarea.getAttribute('data-student');
+            feedbackData[name] = textarea.value || '없음';
+          });
+
+          // 리포트 미리보기 모달 생성
+          const modal = document.createElement('div');
+          modal.className = 'modal';
+          modal.innerHTML = `
+            <div class="modal__content modal__content--large">
+              <div class="modal__header">
+                <h3>리포트 미리보기</h3>
+                <button class="icon-button modal__close" type="button">✕</button>
+              </div>
+              <div class="modal__body">
+                <div class="report-preview">
+                  ${Object.keys(attendanceData).map(name => `
+                    <div class="report-preview__student">
+                      <h4 class="report-preview__student-name">${name}</h4>
+                      <div class="report-preview__section">
+                        <strong>출결:</strong> ${attendanceData[name]}
+                      </div>
+                      <div class="report-preview__section">
+                        <strong>테스트 점수:</strong> ${scoreData[name]}점
+                      </div>
+                      <div class="report-preview__section">
+                        <strong>태그/키워드:</strong> ${tagData[name]}
+                      </div>
+                      <div class="report-preview__section">
+                        <strong>특이사항 및 피드백:</strong>
+                        <p class="report-preview__feedback">${feedbackData[name]}</p>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+              <div class="modal__footer">
+                <button class="btn btn--secondary" type="button" data-action="close-preview">취소</button>
+                <button class="btn btn--primary" type="button" data-action="confirm-send-report">리포트 전송하기</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+          modal.style.display = 'flex';
+
+          // 모달 닫기
+          const closeModal = () => modal.remove();
+          modal.querySelector('[data-action="close-preview"]').addEventListener('click', closeModal);
+          modal.querySelector('.modal__close').addEventListener('click', closeModal);
+          modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+          });
+
+          // 리포트 전송 확인
+          modal.querySelector('[data-action="confirm-send-report"]').addEventListener('click', function() {
+            if (confirm('리포트를 전송하시겠습니까?')) {
+              alert('리포트가 성공적으로 전송되었습니다.\n학부모 앱에 리포트가 업데이트되었습니다.');
+              closeModal();
+              // 첫 번째 스텝으로 리셋
+              const firstStepBtn = document.querySelector('.class-mode__step[data-step="1"]');
+              if (firstStepBtn) {
+                firstStepBtn.click();
+              }
+            }
+          });
         });
       }
 

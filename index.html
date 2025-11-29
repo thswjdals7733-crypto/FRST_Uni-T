@@ -922,8 +922,8 @@
               <ol class="class-mode__steps class-mode__steps--sticky">
                 <li class="class-mode__step class-mode__step--active" data-step="1">1. 출결</li>
                 <li class="class-mode__step" data-step="2">2. 테스트 점수</li>
-                <li class="class-mode__step" data-step="3">3. 특이사항</li>
-                <li class="class-mode__step" data-step="4">4. 리포트 전송</li>
+                <li class="class-mode__step" data-step="3">3. 키워드</li>
+                <li class="class-mode__step" data-step="4">4. 특이사항 및 피드백</li>
               </ol>
 
               <!-- Step 1: 출결 -->
@@ -987,10 +987,10 @@
 
               </div>
 
-              <!-- Step 3: 특이사항 태그 선택 -->
+              <!-- Step 3: 키워드 -->
               <div class="class-mode__panel" data-step="3" id="class-step-3">
-                <h3 class="class-mode__title">3. 특이사항 선택</h3>
-                <p class="class-mode__desc">학생별로 특이사항 태그를 선택해주세요. 리포트 문장이 자동 생성됩니다.</p>
+                <h3 class="class-mode__title">3. 키워드</h3>
+                <p class="class-mode__desc">학생별로 키워드를 선택해주세요. 리포트 문장이 자동 생성됩니다.</p>
 
                 <div class="class-mode__students">
                   <div class="class-student-row class-student-row--notes">
@@ -1038,18 +1038,37 @@
 
               </div>
 
-              <!-- Step 4: 리포트 전송 -->
+              <!-- Step 4: 특이사항 및 피드백 -->
               <div class="class-mode__panel" data-step="4" id="class-step-4">
-                <h3 class="class-mode__title">4. 리포트 전송</h3>
-                <p class="class-mode__desc">입력한 정보를 바탕으로 학부모용 리포트가 자동 생성됩니다.</p>
+                <h3 class="class-mode__title">4. 특이사항 및 피드백</h3>
+                <p class="class-mode__desc">각 학생에 대한 특이사항과 피드백을 작성해주세요.</p>
 
-                <div class="class-mode__preview">
-                  <div class="chart-placeholder">리포트 미리보기 자리</div>
+                <div class="class-mode__students">
+                  <div class="class-student-row class-student-row--feedback">
+                    <div class="class-student-row__header">
+                      <span class="class-student-row__name">홍길동</span>
+                    </div>
+                    <textarea class="class-student-row__feedback" data-student="홍길동" placeholder="이 학생에 대한 특이사항과 피드백을 작성해주세요." rows="4"></textarea>
+                  </div>
+
+                  <div class="class-student-row class-student-row--feedback">
+                    <div class="class-student-row__header">
+                      <span class="class-student-row__name">김철수</span>
+                    </div>
+                    <textarea class="class-student-row__feedback" data-student="김철수" placeholder="이 학생에 대한 특이사항과 피드백을 작성해주세요." rows="4"></textarea>
+                  </div>
+
+                  <div class="class-student-row class-student-row--feedback">
+                    <div class="class-student-row__header">
+                      <span class="class-student-row__name">이영희</span>
+                    </div>
+                    <textarea class="class-student-row__feedback" data-student="이영희" placeholder="이 학생에 대한 특이사항과 피드백을 작성해주세요." rows="4"></textarea>
+                  </div>
                 </div>
 
                 <div class="class-mode__nav">
-                  <button class="btn btn--primary" type="button" data-action="send-report">
-                    리포트 전송하기
+                  <button class="btn btn--primary" type="button" data-action="preview-report">
+                    리포트 미리보기
                   </button>
                 </div>
               </div>
