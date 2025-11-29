@@ -966,7 +966,128 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================
-  // 17. 학생 모드 - 보강 신청
+  // 17. 학생 모드 - 튜터에게 질문하기
+  // ============================================
+  const askTutorBtn = document.querySelector('[data-action="ask-tutor"]');
+  if (askTutorBtn) {
+    askTutorBtn.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal__content" style="max-width: 500px;">
+          <div class="modal__header">
+            <h3>튜터에게 질문하기</h3>
+            <button class="icon-button modal__close" type="button">✕</button>
+          </div>
+          <div class="modal__body">
+            <div class="question-form">
+              <label class="question-form__label">
+                <span>제목</span>
+                <input type="text" class="question-form__input" placeholder="질문 제목을 입력하세요" />
+              </label>
+              <label class="question-form__label">
+                <span>질문 내용</span>
+                <textarea class="question-form__textarea" rows="6" placeholder="궁금한 점을 자세히 입력해주세요"></textarea>
+              </label>
+              <div class="question-form__actions">
+                <button class="btn btn--primary" type="button" data-action="submit-question">질문 보내기</button>
+                <button class="btn btn--secondary" type="button" data-action="cancel-question">취소</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.style.display = 'flex';
+
+      modal.querySelector('[data-action="submit-question"]').addEventListener('click', function() {
+        const title = modal.querySelector('.question-form__input').value;
+        const content = modal.querySelector('.question-form__textarea').value;
+        if (!title || !content) {
+          alert('제목과 내용을 모두 입력해주세요.');
+          return;
+        }
+        alert('질문이 전송되었습니다.\n튜터가 답변을 작성하면 알림으로 알려드립니다.');
+        modal.remove();
+      });
+
+      const closeModal = () => modal.remove();
+      modal.querySelector('[data-action="cancel-question"]').addEventListener('click', closeModal);
+      modal.querySelector('.modal__close').addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+    });
+  }
+
+  // ============================================
+  // 17-1. 학생 모드 - 1:1 상담 신청
+  // ============================================
+  const requestConsultationBtn = document.querySelector('[data-action="request-consultation"]');
+  if (requestConsultationBtn) {
+    requestConsultationBtn.addEventListener('click', function() {
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal__content" style="max-width: 500px;">
+          <div class="modal__header">
+            <h3>1:1 상담 신청</h3>
+            <button class="icon-button modal__close" type="button">✕</button>
+          </div>
+          <div class="modal__body">
+            <div class="consultation-form">
+              <label class="consultation-form__label">
+                <span>희망 일시</span>
+                <input type="datetime-local" class="consultation-form__input" />
+              </label>
+              <label class="consultation-form__label">
+                <span>상담 주제</span>
+                <select class="consultation-form__select">
+                  <option value="">선택하세요</option>
+                  <option value="study-plan">학습 계획 수립</option>
+                  <option value="grade-improvement">성적 향상 방안</option>
+                  <option value="test-prep">시험 대비 전략</option>
+                  <option value="other">기타</option>
+                </select>
+              </label>
+              <label class="consultation-form__label">
+                <span>상세 내용</span>
+                <textarea class="consultation-form__textarea" rows="4" placeholder="상담하고 싶은 내용을 입력해주세요"></textarea>
+              </label>
+              <div class="consultation-form__actions">
+                <button class="btn btn--primary" type="button" data-action="submit-consultation">상담 신청하기</button>
+                <button class="btn btn--secondary" type="button" data-action="cancel-consultation">취소</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+      modal.style.display = 'flex';
+
+      modal.querySelector('[data-action="submit-consultation"]').addEventListener('click', function() {
+        const date = modal.querySelector('.consultation-form__input').value;
+        const topic = modal.querySelector('.consultation-form__select').value;
+        const content = modal.querySelector('.consultation-form__textarea').value;
+        if (!date || !topic) {
+          alert('희망 일시와 상담 주제를 선택해주세요.');
+          return;
+        }
+        alert('상담 신청이 완료되었습니다.\n튜터가 확인 후 일정을 조정해드립니다.');
+        modal.remove();
+      });
+
+      const closeModal = () => modal.remove();
+      modal.querySelector('[data-action="cancel-consultation"]').addEventListener('click', closeModal);
+      modal.querySelector('.modal__close').addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+    });
+  }
+
+  // ============================================
+  // 18. 학생 모드 - 보강 신청
   // ============================================
   const requestMakeupClassBtn = document.querySelector('[data-action="request-makeup-class"]');
   if (requestMakeupClassBtn) {
@@ -1433,6 +1554,202 @@ document.addEventListener('DOMContentLoaded', function() {
       alert(`${title}의 상세 정보 페이지로 이동합니다.\n(실제로는 상세 페이지로 이동)`);
     });
   });
+
+  // ============================================
+  // 9. 튜터별 관리 - 검색 및 필터링
+  // ============================================
+  
+  // 튜터 검색
+  const tutorSearchInput = document.querySelector('[data-action="search-tutors"]');
+  if (tutorSearchInput) {
+    tutorSearchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase().trim();
+      filterTutorList();
+    });
+  }
+
+  // 튜터 필터
+  const tutorFilters = document.querySelectorAll('.admin-tutor-list__filter');
+  tutorFilters.forEach(filter => {
+    filter.addEventListener('change', function() {
+      filterTutorList();
+    });
+  });
+
+  // 튜터 목록 필터링 함수
+  function filterTutorList() {
+    const searchTerm = tutorSearchInput?.value.toLowerCase().trim() || '';
+    const gradeFilter = document.querySelector('.admin-tutor-list__filter[data-filter="grade"]')?.value || '';
+    const subjectFilter = document.querySelector('.admin-tutor-list__filter[data-filter="subject"]')?.value || '';
+    const statusFilter = document.querySelector('.admin-tutor-list__filter[data-filter="status"]')?.value || '';
+
+    const tutorRows = document.querySelectorAll('.admin-tutor-row');
+    
+    tutorRows.forEach(row => {
+      const tutorName = row.querySelector('strong')?.textContent.toLowerCase() || '';
+      const tutorEmail = row.querySelector('.admin-tutor-row__email')?.textContent.toLowerCase() || '';
+      const grade = row.querySelector('.admin-tutor-row__grade')?.textContent.trim() || '';
+      const subject = row.querySelector('td:nth-child(3)')?.textContent.trim() || '';
+      const status = row.querySelector('.admin-tutor-row__status')?.textContent.trim() || '';
+
+      // 검색어 매칭
+      const matchesSearch = !searchTerm || 
+        tutorName.includes(searchTerm) || 
+        tutorEmail.includes(searchTerm);
+
+      // 등급 필터 매칭
+      const matchesGrade = !gradeFilter || grade === gradeFilter;
+
+      // 과목 필터 매칭
+      const matchesSubject = !subjectFilter || 
+        (subjectFilter === 'math' && subject === '수학') ||
+        (subjectFilter === 'english' && subject === '영어') ||
+        (subjectFilter === 'korean' && subject === '국어');
+
+      // 상태 필터 매칭
+      const matchesStatus = !statusFilter ||
+        (statusFilter === 'active' && status === '활성') ||
+        (statusFilter === 'inactive' && status === '비활성') ||
+        (statusFilter === 'pending' && status === '승인 대기');
+
+      // 모든 조건을 만족하면 표시, 아니면 숨김
+      if (matchesSearch && matchesGrade && matchesSubject && matchesStatus) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  // 튜터 상세 보기
+  const viewTutorDetailBtns = document.querySelectorAll('[data-action="view-tutor-detail"]');
+  viewTutorDetailBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tutorId = this.getAttribute('data-tutor-id');
+      const tutorRow = this.closest('.admin-tutor-row');
+      const tutorName = tutorRow.querySelector('strong')?.textContent || '튜터';
+      
+      // 튜터 상세 정보 모달 표시
+      showTutorDetailModal(tutorId, tutorName, tutorRow);
+    });
+  });
+
+  // 튜터 상세 정보 모달 표시 함수
+  function showTutorDetailModal(tutorId, tutorName, tutorRow) {
+    const grade = tutorRow.querySelector('.admin-tutor-row__grade')?.textContent.trim() || '-';
+    const subject = tutorRow.querySelector('td:nth-child(3)')?.textContent.trim() || '-';
+    const teamCount = tutorRow.querySelector('td:nth-child(4)')?.textContent.trim() || '-';
+    const studentCount = tutorRow.querySelector('td:nth-child(5)')?.textContent.trim() || '-';
+    const retentionRate = tutorRow.querySelector('td:nth-child(6)')?.textContent.trim() || '-';
+    const status = tutorRow.querySelector('.admin-tutor-row__status')?.textContent.trim() || '-';
+    const email = tutorRow.querySelector('.admin-tutor-row__email')?.textContent.trim() || '-';
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal__content" style="max-width: 600px;">
+        <div class="modal__header">
+          <h3>${tutorName} 튜터 상세 정보</h3>
+          <button class="icon-button modal__close" type="button">✕</button>
+        </div>
+        <div class="modal__body">
+          <div class="admin-tutor-detail">
+            <div class="admin-tutor-detail__section">
+              <h4 class="admin-tutor-detail__title">기본 정보</h4>
+              <div class="admin-tutor-detail__info">
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">이름</span>
+                  <span class="admin-tutor-detail__value">${tutorName}</span>
+                </div>
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">이메일</span>
+                  <span class="admin-tutor-detail__value">${email}</span>
+                </div>
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">등급</span>
+                  <span class="admin-tutor-detail__value">${grade}등급</span>
+                </div>
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">과목</span>
+                  <span class="admin-tutor-detail__value">${subject}</span>
+                </div>
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">상태</span>
+                  <span class="admin-tutor-detail__value">${status}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-tutor-detail__section">
+              <h4 class="admin-tutor-detail__title">운영 현황</h4>
+              <div class="admin-tutor-detail__info">
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">운영 팀 수</span>
+                  <span class="admin-tutor-detail__value">${teamCount}</span>
+                </div>
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">총 학생 수</span>
+                  <span class="admin-tutor-detail__value">${studentCount}</span>
+                </div>
+                <div class="admin-tutor-detail__row">
+                  <span class="admin-tutor-detail__label">유지율</span>
+                  <span class="admin-tutor-detail__value">${retentionRate}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="admin-tutor-detail__actions">
+              <button class="btn btn--primary" type="button" data-action="edit-tutor" data-tutor-id="${tutorId}">
+                튜터 정보 수정
+              </button>
+              <button class="btn btn--secondary" type="button" data-action="view-tutor-teams" data-tutor-id="${tutorId}">
+                운영 팀 목록 보기
+              </button>
+              <button class="btn btn--secondary" type="button" data-action="view-tutor-reports" data-tutor-id="${tutorId}">
+                리포트 내역 보기
+              </button>
+              ${status === '승인 대기' ? `
+                <button class="btn btn--primary" type="button" data-action="approve-tutor" data-tutor-id="${tutorId}">
+                  튜터 승인
+                </button>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.style.display = 'flex';
+
+    // 모달 내부 액션 버튼들
+    modal.querySelector('[data-action="edit-tutor"]')?.addEventListener('click', function() {
+      alert(`${tutorName} 튜터의 정보를 수정합니다.`);
+      modal.remove();
+    });
+
+    modal.querySelector('[data-action="view-tutor-teams"]')?.addEventListener('click', function() {
+      alert(`${tutorName} 튜터가 운영 중인 팀 목록을 표시합니다.`);
+    });
+
+    modal.querySelector('[data-action="view-tutor-reports"]')?.addEventListener('click', function() {
+      alert(`${tutorName} 튜터가 작성한 리포트 내역을 표시합니다.`);
+    });
+
+    modal.querySelector('[data-action="approve-tutor"]')?.addEventListener('click', function() {
+      if (confirm(`${tutorName} 튜터를 승인하시겠습니까?`)) {
+        alert('튜터가 승인되었습니다.');
+        modal.remove();
+        // 실제로는 상태 업데이트 API 호출
+      }
+    });
+
+    // 모달 닫기
+    const closeModal = () => modal.remove();
+    modal.querySelector('.modal__close').addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+  }
 });
 
 // ============================================

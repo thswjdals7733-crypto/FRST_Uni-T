@@ -162,6 +162,48 @@
             </div>
           </section>
 
+          <!-- 3. 진도율 및 수업 계획 -->
+          <section class="card card--progress-plan" data-block="parent-progress-plan">
+            <header class="card__header">
+              <h2 class="card__title">진도율 및 수업 계획</h2>
+            </header>
+
+            <div class="card__body progress-plan">
+              <div class="progress-plan__item">
+                <h3 class="progress-plan__label">현재까지 진도율</h3>
+                <div class="progress-plan__value">
+                  <span class="progress-plan__percentage">68%</span>
+                  <div class="progress-plan__bar">
+                    <div class="progress-plan__bar-fill" style="width: 68%"></div>
+                  </div>
+                  <p class="progress-plan__meta">전체 커리큘럼 대비 진행률</p>
+                </div>
+              </div>
+
+              <div class="progress-plan__item">
+                <h3 class="progress-plan__label">이번 주차 수업 계획</h3>
+                <div class="progress-plan__content">
+                  <ul class="progress-plan__list">
+                    <li>수학: 함수의 극한과 연속성 (3단원)</li>
+                    <li>영어: 문법 - 관계대명사 심화</li>
+                    <li>주간 테스트: 11월 4주차 평가</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="progress-plan__item">
+                <h3 class="progress-plan__label">앞으로의 수업 계획</h3>
+                <div class="progress-plan__content">
+                  <ul class="progress-plan__list">
+                    <li>다음 주: 미분법 시작 (4단원 예정)</li>
+                    <li>2주 후: 적분법 기초</li>
+                    <li>월말: 중간 평가 예정</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </section>
+
         </section>
 
         <!-- ========== [학부모] 결제/팀 관리 탭 ========== -->
@@ -224,6 +266,81 @@
                 <button class="btn btn--secondary btn--danger" type="button" data-action="leave-team">
                   팀 탈퇴
                 </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 2. 학생 일정 및 결제 정보 -->
+          <section class="card card--team-schedule" data-block="team-schedule">
+            <header class="card__header">
+              <h2 class="card__title">학생 일정 및 결제 정보</h2>
+            </header>
+
+            <div class="card__body team-schedule">
+              <div class="team-schedule__section">
+                <h3 class="team-schedule__title">학생 일정</h3>
+                <div class="team-schedule__calendar">
+                  <div class="team-schedule__calendar-item">
+                    <div class="team-schedule__date">
+                      <span class="team-schedule__day">토</span>
+                      <span class="team-schedule__number">30</span>
+                    </div>
+                    <div class="team-schedule__info">
+                      <p class="team-schedule__time">19:00 - 21:00</p>
+                      <p class="team-schedule__subject">수학 정규 수업</p>
+                    </div>
+                  </div>
+                  <div class="team-schedule__calendar-item">
+                    <div class="team-schedule__date">
+                      <span class="team-schedule__day">일</span>
+                      <span class="team-schedule__number">1</span>
+                    </div>
+                    <div class="team-schedule__info">
+                      <p class="team-schedule__time">14:00 - 16:00</p>
+                      <p class="team-schedule__subject">영어 정규 수업</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="team-schedule__section">
+                <h3 class="team-schedule__title">결제 정보</h3>
+                <div class="team-schedule__payment-info">
+                  <div class="team-schedule__payment-item">
+                    <span class="team-schedule__payment-label">다음 결제일</span>
+                    <span class="team-schedule__payment-value">2025년 12월 5일</span>
+                  </div>
+                  <div class="team-schedule__payment-item">
+                    <span class="team-schedule__payment-label">결제 금액</span>
+                    <span class="team-schedule__payment-value">₩480,000</span>
+                  </div>
+                  <div class="team-schedule__payment-item">
+                    <span class="team-schedule__payment-label">결제 수단</span>
+                    <span class="team-schedule__payment-value">신한카드 ****1234</span>
+                  </div>
+                  <div class="team-schedule__payment-item">
+                    <span class="team-schedule__payment-label">자동 결제</span>
+                    <span class="team-schedule__payment-value team-schedule__payment-value--active">설정됨</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="team-schedule__section">
+                <h3 class="team-schedule__title">팀원 정보</h3>
+                <div class="team-schedule__members">
+                  <div class="team-schedule__member">
+                    <span class="team-schedule__member-name">홍길동</span>
+                    <span class="team-schedule__member-grade">고2</span>
+                  </div>
+                  <div class="team-schedule__member">
+                    <span class="team-schedule__member-name">김철수</span>
+                    <span class="team-schedule__member-grade">고2</span>
+                  </div>
+                  <div class="team-schedule__member">
+                    <span class="team-schedule__member-name">이영희</span>
+                    <span class="team-schedule__member-grade">고2</span>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -481,6 +598,31 @@
             </div>
           </section>
 
+          <!-- D. 튜터 상담 -->
+          <section class="card card--tutor-consultation" data-block="student-consultation">
+            <header class="card__header">
+              <h2 class="card__title">튜터 상담</h2>
+            </header>
+
+            <div class="card__body consultation-section">
+              <div class="consultation-section__item">
+                <h3 class="consultation-section__title">튜터에게 질문하기</h3>
+                <p class="consultation-section__desc">학습 중 궁금한 점을 질문하고 답변을 받을 수 있습니다.</p>
+                <button class="btn btn--primary" type="button" data-action="ask-tutor">
+                  질문하기
+                </button>
+              </div>
+
+              <div class="consultation-section__item">
+                <h3 class="consultation-section__title">1:1 상담 신청</h3>
+                <p class="consultation-section__desc">튜터와 1:1 상담을 신청하여 학습 방향을 논의할 수 있습니다.</p>
+                <button class="btn btn--secondary" type="button" data-action="request-consultation">
+                  상담 신청하기
+                </button>
+              </div>
+            </div>
+          </section>
+
         </section>
 
         <!-- ========== [학생] 월간 리포트 탭 ========== -->
@@ -508,7 +650,7 @@
               <!-- 성취도 - 과제 수행률 -->
               <div class="report-summary__item" data-metric="achievement-assignment">
                 <h3 class="report-summary__label">과제 수행률</h3>
-                <p class="report-summary__value">90%</p>
+                <p class="report-summary__value">내 90% · 평균 85%</p>
                 <div class="report-summary__chart report-summary__chart--donut">
                   <canvas id="student-assignment-chart"></canvas>
                 </div>
@@ -1189,6 +1331,141 @@
               </div>
             </section>
           </div>
+
+          <!-- 튜터별 관리 카드 (전체 폭) -->
+          <section class="card card--admin-tutor-list" data-block="admin-tutor-list">
+            <header class="card__header">
+              <h2 class="card__title">튜터별 관리</h2>
+              <p class="card__meta">각 튜터의 상세 정보를 확인하고 관리할 수 있습니다.</p>
+            </header>
+
+            <div class="card__body admin-tutor-list">
+              <!-- 검색 및 필터 -->
+              <div class="admin-tutor-list__controls">
+                <div class="admin-tutor-list__search">
+                  <input type="text" class="admin-tutor-list__search-input" placeholder="튜터 이름, 이메일, 전화번호로 검색..." data-action="search-tutors" />
+                  <button class="icon-button" type="button" aria-label="검색">🔍</button>
+                </div>
+                <div class="admin-tutor-list__filters">
+                  <select class="admin-tutor-list__filter" data-filter="grade">
+                    <option value="">전체 등급</option>
+                    <option value="S">S등급</option>
+                    <option value="A">A등급</option>
+                    <option value="B">B등급</option>
+                    <option value="C">C등급</option>
+                  </select>
+                  <select class="admin-tutor-list__filter" data-filter="subject">
+                    <option value="">전체 과목</option>
+                    <option value="math">수학</option>
+                    <option value="english">영어</option>
+                    <option value="korean">국어</option>
+                  </select>
+                  <select class="admin-tutor-list__filter" data-filter="status">
+                    <option value="">전체 상태</option>
+                    <option value="active">활성</option>
+                    <option value="inactive">비활성</option>
+                    <option value="pending">승인 대기</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 튜터 목록 테이블 -->
+              <div class="admin-tutor-list__table-wrapper">
+                <table class="admin-tutor-list__table">
+                  <thead>
+                    <tr>
+                      <th>튜터</th>
+                      <th>등급</th>
+                      <th>과목</th>
+                      <th>운영 팀 수</th>
+                      <th>학생 수</th>
+                      <th>유지율</th>
+                      <th>상태</th>
+                      <th>관리</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="admin-tutor-row" data-tutor-id="1">
+                      <td>
+                        <div class="admin-tutor-row__info">
+                          <strong>김튜터</strong>
+                          <span class="admin-tutor-row__email">kimtutor@example.com</span>
+                        </div>
+                      </td>
+                      <td><span class="admin-tutor-row__grade admin-tutor-row__grade--s">S</span></td>
+                      <td>수학</td>
+                      <td>3팀</td>
+                      <td>12명</td>
+                      <td>95%</td>
+                      <td><span class="admin-tutor-row__status admin-tutor-row__status--active">활성</span></td>
+                      <td>
+                        <button class="btn btn--ghost btn--small" type="button" data-action="view-tutor-detail" data-tutor-id="1">
+                          상세 보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="admin-tutor-row" data-tutor-id="2">
+                      <td>
+                        <div class="admin-tutor-row__info">
+                          <strong>박튜터</strong>
+                          <span class="admin-tutor-row__email">parktutor@example.com</span>
+                        </div>
+                      </td>
+                      <td><span class="admin-tutor-row__grade admin-tutor-row__grade--a">A</span></td>
+                      <td>영어</td>
+                      <td>2팀</td>
+                      <td>8명</td>
+                      <td>88%</td>
+                      <td><span class="admin-tutor-row__status admin-tutor-row__status--active">활성</span></td>
+                      <td>
+                        <button class="btn btn--ghost btn--small" type="button" data-action="view-tutor-detail" data-tutor-id="2">
+                          상세 보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="admin-tutor-row" data-tutor-id="3">
+                      <td>
+                        <div class="admin-tutor-row__info">
+                          <strong>최튜터</strong>
+                          <span class="admin-tutor-row__email">choitutor@example.com</span>
+                        </div>
+                      </td>
+                      <td><span class="admin-tutor-row__grade admin-tutor-row__grade--b">B</span></td>
+                      <td>수학</td>
+                      <td>1팀</td>
+                      <td>4명</td>
+                      <td>75%</td>
+                      <td><span class="admin-tutor-row__status admin-tutor-row__status--active">활성</span></td>
+                      <td>
+                        <button class="btn btn--ghost btn--small" type="button" data-action="view-tutor-detail" data-tutor-id="3">
+                          상세 보기
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="admin-tutor-row" data-tutor-id="4">
+                      <td>
+                        <div class="admin-tutor-row__info">
+                          <strong>이튜터</strong>
+                          <span class="admin-tutor-row__email">leetutor@example.com</span>
+                        </div>
+                      </td>
+                      <td><span class="admin-tutor-row__grade admin-tutor-row__grade--c">C</span></td>
+                      <td>국어</td>
+                      <td>1팀</td>
+                      <td>3명</td>
+                      <td>60%</td>
+                      <td><span class="admin-tutor-row__status admin-tutor-row__status--pending">승인 대기</span></td>
+                      <td>
+                        <button class="btn btn--ghost btn--small" type="button" data-action="view-tutor-detail" data-tutor-id="4">
+                          상세 보기
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
 
           <!-- 인센티브 설정 카드 (전체 폭) -->
           <section class="card card--admin-incentives" data-block="admin-incentives">
