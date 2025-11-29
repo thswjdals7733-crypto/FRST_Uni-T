@@ -1192,123 +1192,101 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================
-  // 5. 수업 모드 Step 전환
+  // 5. 수업 모드 Step 스크롤 방식
   // ============================================
-  let currentStep = 1;
-  const totalSteps = 4;
-  const completedSteps = new Set([1]); // 1단계는 기본 완료로 간주
-
-  // 단계 완료 여부 확인 함수
-  function isStepCompleted(step) {
-    if (step === 1) {
-      // 출결: 모든 학생의 출결이 선택되었는지 확인
-      const studentRows = document.querySelectorAll('.class-mode__panel[data-step="1"] .class-student-row');
-      for (let row of studentRows) {
-        const hasSelected = row.querySelector('[data-attendance].chip--active');
-        if (!hasSelected) return false;
-      }
-      return true;
-    } else if (step === 2) {
-      // 테스트 점수: 모든 학생의 점수가 입력되었는지 확인
-      const inputs = document.querySelectorAll('.class-mode__panel[data-step="2"] .class-student-row__input');
-      for (let input of inputs) {
-        if (!input.value || input.value.trim() === '') return false;
-      }
-      return true;
-    } else if (step === 3) {
-      // 특이사항: 최소 1명 이상의 학생에게 태그가 선택되었는지 확인 (선택사항이므로 항상 true)
-      return true;
-    } else if (step === 4) {
-      // 리포트 전송: 이전 단계들이 모두 완료되었는지 확인
-      return completedSteps.has(1) && completedSteps.has(2);
-    }
-    return false;
-  }
-
-  function updateStep(step) {
-    // 뒤 단계를 클릭한 경우 이전 단계 완료 여부 확인
-    if (step > currentStep) {
-      for (let i = currentStep; i < step; i++) {
-        if (!isStepCompleted(i)) {
-          alert('이전 단계 입력을 먼저 완료해주시기 바랍니다.');
-          return;
-        }
-        completedSteps.add(i);
-      }
-    }
-
-    // 모든 패널 숨기기
-    const panels = document.querySelectorAll('.class-mode__panel');
-    panels.forEach(panel => {
-      panel.classList.remove('class-mode__panel--active');
-      panel.setAttribute('hidden', '');
-    });
-
-    // 모든 스텝 비활성화
-    const steps = document.querySelectorAll('.class-mode__step');
-    steps.forEach(stepEl => {
-      stepEl.classList.remove('class-mode__step--active');
-    });
-
-    // 현재 스텝 활성화
-    const currentPanel = document.querySelector(`.class-mode__panel[data-step="${step}"]`);
-    const currentStepEl = document.querySelector(`.class-mode__step[data-step="${step}"]`);
+  const classModeContainer = document.querySelector('.class-mode');
+  if (classModeContainer) {
+    const stepButtons = document.querySelectorAll('.class-mode__step');
+    const stepPanels = document.querySelectorAll('.class-mode__panel');
     
-    if (currentPanel) {
-      currentPanel.classList.add('class-mode__panel--active');
-      currentPanel.removeAttribute('hidden');
-    }
-    
-    if (currentStepEl) {
-      currentStepEl.classList.add('class-mode__step--active');
-    }
-
-    currentStep = step;
-    completedSteps.add(step);
-  }
-
-  // 다음 스텝
-  const nextStepBtns = document.querySelectorAll('[data-action="class-next-step"]');
-  nextStepBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      // 현재 단계 완료 여부 확인
-      if (!isStepCompleted(currentStep)) {
-        if (currentStep === 1) {
-          alert('모든 학생의 출결을 선택해주세요.');
-        } else if (currentStep === 2) {
-          alert('모든 학생의 테스트 점수를 입력해주세요.');
+    // 단계 완료 여부 확인 함수
+    function isStepCompleted(step) {
+      if (step === 1) {
+        const studentRows = document.querySelectorAll('.class-mode__panel[data-step="1"] .class-student-row');
+        for (let row of studentRows) {
+          const hasSelected = row.querySelector('[data-attendance].chip--active');
+          if (!hasSelected) return false;
         }
-        return;
+        return true;
+      } else if (step === 2) {
+        const inputs = document.querySelectorAll('.class-mode__panel[data-step="2"] .class-student-row__input');
+        for (let input of inputs) {
+          if (!input.value || input.value.trim() === '') return false;
+        }
+        return true;
+      } else if (step === 3) {
+        return true; // 선택사항
+      } else if (step === 4) {
+        return true; // 리포트 전송은 항상 가능
       }
-      
-      completedSteps.add(currentStep);
-      
-      if (currentStep < totalSteps) {
-        updateStep(currentStep + 1);
-      }
-    });
-  });
+      return false;
+    }
 
-  // 단계 클릭으로 직접 이동
-  const stepButtons = document.querySelectorAll('.class-mode__step');
-  stepButtons.forEach(stepBtn => {
-    stepBtn.addEventListener('click', function() {
-      const targetStep = parseInt(this.getAttribute('data-step'));
-      if (targetStep !== currentStep) {
-        updateStep(targetStep);
+    // 현재 활성화된 단계 가져오기
+    function getCurrentActiveStep() {
+      const activeBtn = document.querySelector('.class-mode__step--active');
+      if (activeBtn) {
+        return parseInt(activeBtn.getAttribute('data-step'));
       }
-    });
-  });
+      return 1;
+    }
 
-  // 이전 스텝
-  const prevStepBtns = document.querySelectorAll('[data-action="class-prev-step"]');
-  prevStepBtns.forEach(btn => {
-    btn.addEventListener('click', function() {
-      if (currentStep > 1) {
-        updateStep(currentStep - 1);
+    // 현재 활성화된 단계 업데이트 함수
+    function updateActiveStep(step) {
+      stepButtons.forEach(btn => {
+        btn.classList.remove('class-mode__step--active');
+      });
+      
+      const activeBtn = document.querySelector(`.class-mode__step[data-step="${step}"]`);
+      if (activeBtn) {
+        activeBtn.classList.add('class-mode__step--active');
       }
+    }
+
+    // 내비게이션 클릭 시 해당 섹션으로 스크롤
+    stepButtons.forEach(stepBtn => {
+      stepBtn.addEventListener('click', function() {
+        const targetStep = parseInt(this.getAttribute('data-step'));
+        const targetPanel = document.getElementById(`class-step-${targetStep}`);
+        
+        if (targetPanel) {
+          // 스크롤 이동
+          const stickyNav = document.querySelector('.class-mode__steps--sticky');
+          const navHeight = stickyNav ? stickyNav.offsetHeight : 0;
+          const targetPosition = targetPanel.offsetTop - navHeight - 20;
+          
+          window.scrollTo({
+            top: targetPosition,
+            behavior: 'smooth'
+          });
+        }
+      });
     });
-  });
+
+    // Intersection Observer로 현재 보이는 섹션 감지
+    const observerOptions = {
+      root: null,
+      rootMargin: '-120px 0px -50% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const step = parseInt(entry.target.getAttribute('data-step'));
+          updateActiveStep(step);
+        }
+      });
+    }, observerOptions);
+
+    // 각 패널 관찰 시작
+    stepPanels.forEach(panel => {
+      observer.observe(panel);
+    });
+
+    // 초기 활성화
+    updateActiveStep(1);
+  }
 
   // 출결 선택 (한 학생당 하나만 선택 가능)
   const attendanceBtns = document.querySelectorAll('[data-attendance]');

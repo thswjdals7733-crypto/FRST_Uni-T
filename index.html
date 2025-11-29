@@ -77,9 +77,6 @@
           <button class="tab-nav__btn" data-tab="parent-matching">
             매칭
           </button>
-          <button class="tab-nav__btn" data-tab="parent-notifications">
-            알림센터
-          </button>
         </nav>
 
         <!-- ========== [학부모] 홈 탭 ========== -->
@@ -474,48 +471,6 @@
           </section>
         </section>
 
-        <!-- ========== [학부모] 알림센터 탭 ========== -->
-        <section id="parent-notifications" class="tab-panel" data-tab-panel="parent-notifications" hidden>
-          <section class="card card--notifications" data-block="parent-notifications">
-            <header class="card__header">
-              <h2 class="card__title">알림센터</h2>
-            </header>
-            <div class="card__body">
-              <div class="notifications__list">
-                <article class="notification-item">
-                  <p class="notification-item__type">리포트 업데이트</p>
-                  <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
-                  <p class="notification-item__time">2시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">결제 변동</p>
-                  <p class="notification-item__text">새 팀원 합류로 이번 달 결제 금액이 변경되었습니다.</p>
-                  <p class="notification-item__time">1일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">수업 긴급 공지</p>
-                  <p class="notification-item__text">이번 주 토요일 수업 시간이 30분 앞당겨집니다.</p>
-                  <p class="notification-item__time">3일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">팀원 변동</p>
-                  <p class="notification-item__text">김철수 학생이 팀에 합류했습니다.</p>
-                  <p class="notification-item__time">5일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">과제 제출</p>
-                  <p class="notification-item__text">오늘 과제가 제출되었습니다. 인증샷을 확인하세요.</p>
-                  <p class="notification-item__time">1주 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">결제 예정 알림</p>
-                  <p class="notification-item__text">다음 달 결제일이 3일 남았습니다.</p>
-                  <p class="notification-item__time">1주 전</p>
-                </article>
-              </div>
-            </div>
-          </section>
-        </section>
       </section>
 
       <!-- ===============================
@@ -533,9 +488,6 @@
           </button>
           <button class="tab-nav__btn" data-tab="student-matching">
             매칭
-          </button>
-          <button class="tab-nav__btn" data-tab="student-notifications">
-            알림센터
           </button>
         </nav>
 
@@ -832,43 +784,6 @@
           </section>
         </section>
 
-        <!-- ========== [학생] 알림센터 탭 ========== -->
-        <section id="student-notifications" class="tab-panel" data-tab-panel="student-notifications" hidden>
-          <section class="card card--notifications" data-block="student-notifications">
-            <header class="card__header">
-              <h2 class="card__title">알림센터</h2>
-            </header>
-            <div class="card__body">
-              <div class="notifications__list">
-                <article class="notification-item">
-                  <p class="notification-item__type">과제 제출 완료</p>
-                  <p class="notification-item__text">오늘 과제가 제출되었습니다. 튜터 확인 중입니다.</p>
-                  <p class="notification-item__time">30분 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">수업 일정 변경</p>
-                  <p class="notification-item__text">이번 주 토요일 수업 시간이 19시로 변경되었습니다.</p>
-                  <p class="notification-item__time">2시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">월간 리포트 업데이트</p>
-                  <p class="notification-item__text">10월 학습 리포트가 업데이트되었습니다.</p>
-                  <p class="notification-item__time">1일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">보강 신청 승인</p>
-                  <p class="notification-item__text">보강 신청이 승인되었습니다. 일정을 확인해주세요.</p>
-                  <p class="notification-item__time">2일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">테스트 결과</p>
-                  <p class="notification-item__text">주간 테스트 결과가 업로드되었습니다.</p>
-                  <p class="notification-item__time">3일 전</p>
-                </article>
-              </div>
-            </div>
-          </section>
-        </section>
       </section>
 
       <!-- ===============================
@@ -886,9 +801,6 @@
           </button>
           <button class="tab-nav__btn" data-tab="tutor-schedule">
             스케줄 · 자료
-          </button>
-          <button class="tab-nav__btn" data-tab="tutor-notifications">
-            알림센터
           </button>
         </nav>
 
@@ -988,8 +900,8 @@
             </header>
 
             <div class="card__body class-mode">
-              <!-- 단계 표시 (stepper) -->
-              <ol class="class-mode__steps">
+              <!-- 단계 표시 (stepper) - 상단 고정 -->
+              <ol class="class-mode__steps class-mode__steps--sticky">
                 <li class="class-mode__step class-mode__step--active" data-step="1">1. 출결</li>
                 <li class="class-mode__step" data-step="2">2. 테스트 점수</li>
                 <li class="class-mode__step" data-step="3">3. 특이사항</li>
@@ -997,7 +909,7 @@
               </ol>
 
               <!-- Step 1: 출결 -->
-              <div class="class-mode__panel class-mode__panel--active" data-step="1">
+              <div class="class-mode__panel" data-step="1" id="class-step-1">
                 <h3 class="class-mode__title">1. 출결 체크</h3>
                 <p class="class-mode__desc">학생별로 출석/지각/결석을 선택하세요.</p>
 
@@ -1028,13 +940,10 @@
                   </div>
                 </div>
 
-                <button class="btn btn--primary class-mode__next" type="button" data-action="class-next-step">
-                  다음 (테스트 점수 입력) →
-                </button>
               </div>
 
               <!-- Step 2: 테스트 점수 입력 -->
-              <div class="class-mode__panel" data-step="2" hidden>
+              <div class="class-mode__panel" data-step="2" id="class-step-2">
                 <h3 class="class-mode__title">2. 테스트 점수 입력</h3>
                 <p class="class-mode__desc">이번 수업/주간 테스트 점수를 입력하면 평균과 등수가 자동 계산됩니다.</p>
 
@@ -1058,14 +967,10 @@
                   <p>팀 평균: 85점 · 상위권: 2명 · 중위권: 3명 · 하위권: 1명 (예시 자리)</p>
                 </div>
 
-                <div class="class-mode__nav">
-                  <button class="btn btn--ghost" type="button" data-action="class-prev-step">← 이전</button>
-                  <button class="btn btn--primary" type="button" data-action="class-next-step">다음 (특이사항 선택) →</button>
-                </div>
               </div>
 
               <!-- Step 3: 특이사항 태그 선택 -->
-              <div class="class-mode__panel" data-step="3" hidden>
+              <div class="class-mode__panel" data-step="3" id="class-step-3">
                 <h3 class="class-mode__title">3. 특이사항 선택</h3>
                 <p class="class-mode__desc">학생별로 특이사항 태그를 선택해주세요. 리포트 문장이 자동 생성됩니다.</p>
 
@@ -1113,14 +1018,10 @@
                   </div>
                 </div>
 
-                <div class="class-mode__nav">
-                  <button class="btn btn--ghost" type="button" data-action="class-prev-step">← 이전</button>
-                  <button class="btn btn--primary" type="button" data-action="class-next-step">다음 (리포트 전송) →</button>
-                </div>
               </div>
 
               <!-- Step 4: 리포트 전송 -->
-              <div class="class-mode__panel" data-step="4" hidden>
+              <div class="class-mode__panel" data-step="4" id="class-step-4">
                 <h3 class="class-mode__title">4. 리포트 전송</h3>
                 <p class="class-mode__desc">입력한 정보를 바탕으로 학부모용 리포트가 자동 생성됩니다.</p>
 
@@ -1129,7 +1030,6 @@
                 </div>
 
                 <div class="class-mode__nav">
-                  <button class="btn btn--ghost" type="button" data-action="class-prev-step">← 이전</button>
                   <button class="btn btn--primary" type="button" data-action="send-report">
                     리포트 전송하기
                   </button>
@@ -1215,48 +1115,6 @@
           </div>
         </section>
 
-        <!-- ========== [튜터] 알림센터 탭 ========== -->
-        <section id="tutor-notifications" class="tab-panel" data-tab-panel="tutor-notifications" hidden>
-          <section class="card card--notifications" data-block="tutor-notifications">
-            <header class="card__header">
-              <h2 class="card__title">알림센터</h2>
-            </header>
-            <div class="card__body">
-              <div class="notifications__list">
-                <article class="notification-item">
-                  <p class="notification-item__type">급여 지급 완료</p>
-                  <p class="notification-item__text">이번 달 급여가 지급되었습니다. (₩3,850,000)</p>
-                  <p class="notification-item__time">1시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">새 학생 매칭</p>
-                  <p class="notification-item__text">새로운 학생이 팀에 매칭되었습니다. 프로필을 확인해주세요.</p>
-                  <p class="notification-item__time">5시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">리포트 작성 알림</p>
-                  <p class="notification-item__text">이번 주 리포트 작성 기한이 2일 남았습니다.</p>
-                  <p class="notification-item__time">1일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">수업 일정 변경 요청</p>
-                  <p class="notification-item__text">학생이 수업 일정 변경을 요청했습니다.</p>
-                  <p class="notification-item__time">2일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">등급 업데이트</p>
-                  <p class="notification-item__text">튜터 등급이 A등급으로 상승했습니다.</p>
-                  <p class="notification-item__time">3일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">보강 신청</p>
-                  <p class="notification-item__text">학생이 보강 수업을 신청했습니다.</p>
-                  <p class="notification-item__time">4일 전</p>
-                </article>
-              </div>
-            </div>
-          </section>
-        </section>
       </section>
 
       <!-- ===============================
@@ -1274,9 +1132,6 @@
           </button>
           <button class="tab-nav__btn" data-tab="admin-matching">
             매칭 관리
-          </button>
-          <button class="tab-nav__btn" data-tab="admin-notifications">
-            알림센터
           </button>
         </nav>
 
@@ -1741,48 +1596,6 @@
           </section>
         </section>
 
-        <!-- ========== [관리자] 알림센터 탭 ========== -->
-        <section id="admin-notifications" class="tab-panel" data-tab-panel="admin-notifications" hidden>
-          <section class="card card--notifications" data-block="admin-notifications">
-            <header class="card__header">
-              <h2 class="card__title">알림센터</h2>
-            </header>
-            <div class="card__body">
-              <div class="notifications__list">
-                <article class="notification-item notification-item--danger">
-                  <p class="notification-item__type">긴급: 결제 오류</p>
-                  <p class="notification-item__text">XX팀 결제 정보 미갱신으로 인한 환불 요청이 발생했습니다.</p>
-                  <p class="notification-item__time">10분 전</p>
-                </article>
-                <article class="notification-item notification-item--warning">
-                  <p class="notification-item__type">경고: 튜터 리포트 미작성</p>
-                  <p class="notification-item__text">3명의 튜터가 최근 2주간 리포트를 작성하지 않았습니다.</p>
-                  <p class="notification-item__time">1시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">정산 완료</p>
-                  <p class="notification-item__text">이번 달 정산이 완료되었습니다. 총 45명의 튜터에게 급여가 지급되었습니다.</p>
-                  <p class="notification-item__time">3시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">새 튜터 등록</p>
-                  <p class="notification-item__text">새로운 튜터가 등록되었습니다. 프로필을 검토해주세요.</p>
-                  <p class="notification-item__time">5시간 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">매칭 대기 증가</p>
-                  <p class="notification-item__text">대기 중인 학생이 5명 증가했습니다. 매칭을 진행해주세요.</p>
-                  <p class="notification-item__time">1일 전</p>
-                </article>
-                <article class="notification-item">
-                  <p class="notification-item__type">시스템 업데이트</p>
-                  <p class="notification-item__text">튜터 등급 산정 알고리즘이 업데이트되었습니다.</p>
-                  <p class="notification-item__time">2일 전</p>
-                </article>
-              </div>
-            </div>
-          </section>
-        </section>
       </section>
 
     </main>
