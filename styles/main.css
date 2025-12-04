@@ -1212,6 +1212,11 @@ p {
   color: var(--bg-white);
 }
 
+.team-card__badge--paused {
+  background-color: rgba(107, 114, 128, 0.1);
+  color: #6B7280;
+}
+
 .team-card__meta {
   font-size: 14px;
   color: var(--text-muted);
@@ -1658,6 +1663,15 @@ p {
   gap: 8px;
 }
 
+.recruit-form__group--row {
+  flex-direction: row;
+  gap: 12px;
+}
+
+.recruit-form__group--row .recruit-form__label {
+  flex: 1;
+}
+
 .recruit-form__label {
   display: flex;
   flex-direction: column;
@@ -1720,6 +1734,61 @@ p {
   gap: 12px;
   padding-top: 8px;
   border-top: 1px solid var(--bg-gray-3);
+}
+
+/* 모집게시판 */
+.recruit-board {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.recruit-board__filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.recruit-board__filter {
+  padding: 10px 16px;
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: var(--bg-white);
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 150px;
+}
+
+.recruit-board__filter:hover {
+  border-color: var(--primary);
+}
+
+.recruit-board__filter:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(4, 89, 240, 0.1);
+}
+
+.recruit-board__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* 나의 모집글 */
+.my-recruits {
+  display: flex;
+  flex-direction: column;
+}
+
+.my-recruits__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* ============================================
@@ -2138,6 +2207,10 @@ p {
   padding: 20px;
 }
 
+.modal[hidden] {
+  display: none;
+}
+
 .modal__content {
   background-color: var(--bg-white);
   border-radius: 12px;
@@ -2175,6 +2248,13 @@ p {
 
 .modal__content--large {
   max-width: 800px;
+}
+
+.modal__header-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
 }
 
 .modal__footer {
@@ -2371,6 +2451,58 @@ p {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 32px;
+}
+
+/* 수업 운영 제한 */
+.tutor-limits {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.tutor-limits__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: var(--bg-gray-1);
+  border-radius: 10px;
+  border: 1px solid var(--bg-gray-3);
+}
+
+.tutor-limits__label {
+  font-size: 15px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.tutor-limits__value {
+  font-size: 15px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.tutor-limits__value--grade {
+  padding: 4px 12px;
+  background-color: var(--primary);
+  color: var(--bg-white);
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.tutor-limits__warning {
+  padding: 12px 16px;
+  background-color: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+
+.tutor-limits__warning p {
+  font-size: 13px;
+  color: #F59E0B;
+  margin: 0;
+  line-height: 1.5;
 }
 
 /* 급여 대시보드 */
@@ -3947,4 +4079,322 @@ p {
   .admin-suggestion-item__actions .btn {
     width: 100%;
   }
+
+  .withdrawal-flow-modal .modal__content {
+    max-width: 100%;
+    margin: 10px;
+  }
+
+  .withdrawal-benefit-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .withdrawal-benefit-item .btn {
+    width: 100%;
+    margin-top: 12px;
+  }
+}
+
+/* ============================================
+   20. 마이페이지 및 탈퇴 플로우
+   ============================================ */
+.profile {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.profile__section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile__section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.profile__menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.profile__menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background-color: var(--bg-white);
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: left;
+  width: 100%;
+}
+
+.profile__menu-item:hover {
+  background-color: var(--bg-gray-1);
+  border-color: var(--primary);
+}
+
+.profile__menu-label {
+  font-size: 15px;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.profile__menu-arrow {
+  font-size: 18px;
+  color: var(--text-muted);
+}
+
+/* 탈퇴 플로우 */
+.withdrawal-flow {
+  position: relative;
+}
+
+.withdrawal-step {
+  display: none;
+}
+
+.withdrawal-step--active {
+  display: block;
+}
+
+.withdrawal-info-section {
+  margin-bottom: 32px;
+}
+
+.withdrawal-info-section__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 16px 0;
+}
+
+.withdrawal-info-section__icon {
+  font-size: 24px;
+}
+
+.withdrawal-info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.withdrawal-info-item {
+  padding: 16px 20px;
+  background-color: var(--bg-gray-1);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.6;
+}
+
+/* 탈퇴 설문 */
+.withdrawal-survey {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.withdrawal-survey__desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.withdrawal-survey__options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.withdrawal-survey__option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background-color: var(--bg-gray-1);
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.withdrawal-survey__option:hover {
+  background-color: var(--bg-gray-2);
+  border-color: var(--primary);
+}
+
+.withdrawal-survey__option input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.withdrawal-survey__option span {
+  font-size: 15px;
+  color: var(--text-main);
+  flex: 1;
+}
+
+.withdrawal-survey__textarea {
+  margin-top: 8px;
+}
+
+.withdrawal-survey__label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.withdrawal-survey__label span {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.withdrawal-survey__input {
+  padding: 12px 16px;
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.withdrawal-survey__input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(4, 89, 240, 0.1);
+}
+
+/* 직거래 방지 안내 */
+.withdrawal-notice {
+  padding: 24px;
+  background-color: rgba(4, 89, 240, 0.05);
+  border: 1px solid rgba(4, 89, 240, 0.2);
+  border-radius: 12px;
+}
+
+.withdrawal-notice__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.withdrawal-notice__text {
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* 대안 제안 */
+.withdrawal-benefits {
+  margin-bottom: 32px;
+}
+
+.withdrawal-benefits__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 20px 0;
+}
+
+.withdrawal-benefits__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.withdrawal-benefit-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background-color: var(--bg-gray-1);
+  border: 1px solid var(--bg-gray-3);
+  border-radius: 12px;
+}
+
+.withdrawal-benefit-item__icon {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.withdrawal-benefit-item__content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.withdrawal-benefit-item__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.withdrawal-benefit-item__desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* 탈퇴 요약 */
+.withdrawal-summary {
+  padding: 20px;
+  background-color: var(--bg-gray-1);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+.withdrawal-summary__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+}
+
+.withdrawal-summary__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.withdrawal-summary__item {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-left: 16px;
+  position: relative;
+}
+
+.withdrawal-summary__item::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: bold;
 }

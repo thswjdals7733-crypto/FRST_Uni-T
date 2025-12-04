@@ -1652,6 +1652,68 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // ============================================
+  // 6-2. 모집글 관리 기능 (학부모/튜터)
+  // ============================================
+  // 모집 중지
+  document.querySelectorAll('[data-action="pause-recruit"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (confirm('모집을 중지하시겠습니까?')) {
+        alert('모집이 중지되었습니다.');
+        // 실제로는 서버에 요청 보내기
+      }
+    });
+  });
+
+  // 모집 재개
+  document.querySelectorAll('[data-action="resume-recruit"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (confirm('모집을 재개하시겠습니까?')) {
+        alert('모집이 재개되었습니다.');
+        // 실제로는 서버에 요청 보내기
+      }
+    });
+  });
+
+  // 모집글 삭제
+  document.querySelectorAll('[data-action="delete-recruit"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (confirm('정말로 이 모집글을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+        alert('모집글이 삭제되었습니다.');
+        // 실제로는 서버에 요청 보내고 카드 제거
+        this.closest('.team-card')?.remove();
+      }
+    });
+  });
+
+  // ============================================
+  // 6-3. 튜터가 모집글에 신청하는 기능
+  // ============================================
+  document.querySelectorAll('[data-action="tutor-join-recruit"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // 튜터 레벨별 제한 확인
+      const currentClasses = 2; // 현재 진행 중인 수업 수 (실제로는 서버에서 가져오기)
+      const waitingClasses = 1; // 대기 중인 팀 수 (실제로는 서버에서 가져오기)
+      const maxClasses = 3; // 최대 수업 수 (튜터 레벨에 따라 다름)
+      const maxWaiting = 2; // 최대 대기 중 팀 수
+
+      if (currentClasses >= maxClasses) {
+        alert(`최대 수업 수(${maxClasses}개)에 도달했습니다. 더 이상 신청할 수 없습니다.`);
+        return;
+      }
+
+      if (waitingClasses >= maxWaiting) {
+        alert(`대기 중인 팀이 최대 개수(${maxWaiting}개)에 도달했습니다. 모집이 완료된 후 다시 신청해주세요.`);
+        return;
+      }
+
+      if (confirm('이 모집글에 참가 신청하시겠습니까?')) {
+        alert('신청이 완료되었습니다. 학부모/학생의 승인을 기다려주세요.');
+        // 실제로는 서버에 요청 보내기
+      }
+    });
+  });
+
   // 튜터 참가하기 버튼
   const tutorJoinClassBtns = document.querySelectorAll('[data-action="tutor-join-class"]');
   tutorJoinClassBtns.forEach(btn => {
@@ -1685,6 +1747,18 @@ document.addEventListener('DOMContentLoaded', function() {
   if (tutorRecruitForm) {
     tutorRecruitForm.addEventListener('submit', function(e) {
       e.preventDefault();
+      
+      // 튜터 레벨별 제한 확인
+      const currentClasses = 2; // 현재 진행 중인 수업 수 (실제로는 서버에서 가져오기)
+      const waitingClasses = 1; // 대기 중인 팀 수 (실제로는 서버에서 가져오기)
+      const maxClasses = 3; // 최대 수업 수 (튜터 레벨에 따라 다름)
+      const maxWaiting = 2; // 최대 대기 중 팀 수
+
+      if (waitingClasses >= maxWaiting) {
+        alert(`대기 중인 팀이 최대 개수(${maxWaiting}개)에 도달했습니다. 모집이 완료된 후 다시 작성해주세요.`);
+        return;
+      }
+
       const formData = new FormData(this);
       const data = Object.fromEntries(formData);
       
@@ -1694,6 +1768,117 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   }
+
+  // ============================================
+  // 7. 팀 탈퇴 / 수강 종료 플로우
+  // ============================================
+  const withdrawalModal = document.getElementById('withdrawal-flow-modal');
+  let currentWithdrawalStep = 1;
+  const totalWithdrawalSteps = 4;
+
+  // 탈퇴 플로우 열기
+  document.querySelectorAll('[data-action="open-withdrawal-flow"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      currentWithdrawalStep = 1;
+      withdrawalModal.removeAttribute('hidden');
+      updateWithdrawalStep(1);
+    });
+  });
+
+  // 탈퇴 모달 닫기
+  document.querySelectorAll('[data-action="close-withdrawal-modal"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      withdrawalModal.setAttribute('hidden', '');
+      currentWithdrawalStep = 1;
+      updateWithdrawalStep(1);
+    });
+  });
+
+  // 계속 이용하기
+  document.querySelectorAll('[data-action="continue-using"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      withdrawalModal.setAttribute('hidden', '');
+      currentWithdrawalStep = 1;
+      updateWithdrawalStep(1);
+    });
+  });
+
+  // 다음 단계
+  document.querySelectorAll('[data-action="next-withdrawal-step"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (currentWithdrawalStep < totalWithdrawalSteps) {
+        currentWithdrawalStep++;
+        updateWithdrawalStep(currentWithdrawalStep);
+      }
+    });
+  });
+
+  // 이전 단계
+  document.querySelectorAll('[data-action="prev-withdrawal-step"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      if (currentWithdrawalStep > 1) {
+        currentWithdrawalStep--;
+        updateWithdrawalStep(currentWithdrawalStep);
+      }
+    });
+  });
+
+  // 탈퇴 단계 업데이트 함수
+  function updateWithdrawalStep(step) {
+    const allSteps = document.querySelectorAll('.withdrawal-step');
+    allSteps.forEach(s => {
+      s.classList.remove('withdrawal-step--active');
+      s.setAttribute('hidden', '');
+    });
+
+    const currentStepElement = document.querySelector(`.withdrawal-step[data-step="${step}"]`);
+    if (currentStepElement) {
+      currentStepElement.classList.add('withdrawal-step--active');
+      currentStepElement.removeAttribute('hidden');
+    }
+  }
+
+  // 탈퇴 확인
+  document.querySelectorAll('[data-action="confirm-withdrawal"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      // 설문 데이터 수집
+      const reasons = [];
+      document.querySelectorAll('input[name="withdrawal-reason"]:checked').forEach(checkbox => {
+        reasons.push(checkbox.value);
+      });
+      const feedback = document.querySelector('textarea[name="withdrawal-feedback"]').value;
+
+      if (confirm('정말로 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) {
+        // 실제로는 서버에 탈퇴 요청 보내기
+        alert('탈퇴 로직 호출\n\n수집된 데이터:\n- 사유: ' + reasons.join(', ') + '\n- 피드백: ' + (feedback || '없음'));
+        withdrawalModal.setAttribute('hidden', '');
+        currentWithdrawalStep = 1;
+        updateWithdrawalStep(1);
+      }
+    });
+  });
+
+  // 대안 제안 버튼들
+  document.querySelectorAll('[data-action="request-consultation"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      alert('상담 신청이 완료되었습니다. 담당자가 연락드리겠습니다.');
+    });
+  });
+
+  document.querySelectorAll('[data-action="request-benefit"]').forEach(btn => {
+    btn.addEventListener('click', function() {
+      alert('혜택 신청이 완료되었습니다. 자세한 내용은 안내를 확인해주세요.');
+    });
+  });
+
+  // 모달 배경 클릭 시 닫기
+  withdrawalModal.addEventListener('click', function(e) {
+    if (e.target === withdrawalModal) {
+      withdrawalModal.setAttribute('hidden', '');
+      currentWithdrawalStep = 1;
+      updateWithdrawalStep(1);
+    }
+  });
 
   // 모집글 작성 취소
   const cancelRecruitBtns = document.querySelectorAll('[data-action="cancel-recruit"]');
