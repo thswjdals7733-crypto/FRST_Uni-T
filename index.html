@@ -77,6 +77,9 @@
           <button class="tab-nav__btn" data-tab="parent-matching">
             매칭
           </button>
+          <button class="tab-nav__btn" data-tab="parent-report">
+            리포트
+          </button>
           <button class="tab-nav__btn" data-tab="parent-profile">
             마이페이지
           </button>
@@ -352,6 +355,170 @@
             </div>
           </section>
 
+        </section>
+
+        <!-- ========== [학부모] 리포트 탭 ========== -->
+        <section id="parent-report" class="tab-panel" data-tab-panel="parent-report" hidden>
+          <section class="card card--report-tabs">
+            <div class="card__body">
+              <!-- 리포트 서브 탭 네비게이션 -->
+              <div class="report-tabs">
+                <button class="report-tabs__btn report-tabs__btn--active" data-report-tab="parent-weekly">
+                  주차별 리포트
+                </button>
+                <button class="report-tabs__btn" data-report-tab="parent-monthly">
+                  월별 리포트
+                </button>
+              </div>
+
+              <!-- 주차별 리포트 (메인) -->
+              <div id="parent-weekly" class="report-tabs__content report-tabs__content--active">
+                <section class="card card--weekly-report">
+                  <header class="card__header">
+                    <h2 class="card__title">주차별 학습 리포트</h2>
+                    <div class="card__header-actions">
+                      <select class="report-week-select" name="week">
+                        <option value="current">이번 주</option>
+                        <option value="week-1">1주차</option>
+                        <option value="week-2">2주차</option>
+                        <option value="week-3">3주차</option>
+                        <option value="week-4">4주차</option>
+                      </select>
+                    </div>
+                  </header>
+
+                  <div class="card__body weekly-report">
+                    <!-- 주차별 학습 현황 -->
+                    <div class="weekly-report__section">
+                      <h3 class="weekly-report__section-title">이번 주 학습 현황</h3>
+                      <div class="grid grid--three-columns">
+                        <div class="weekly-report__metric">
+                          <span class="weekly-report__metric-label">출석률</span>
+                          <span class="weekly-report__metric-value">100%</span>
+                        </div>
+                        <div class="weekly-report__metric">
+                          <span class="weekly-report__metric-label">과제 수행률</span>
+                          <span class="weekly-report__metric-value">90%</span>
+                        </div>
+                        <div class="weekly-report__metric">
+                          <span class="weekly-report__metric-label">테스트 점수</span>
+                          <span class="weekly-report__metric-value">85점</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 주차별 상세 내용 -->
+                    <div class="weekly-report__section">
+                      <h3 class="weekly-report__section-title">주차별 상세 내용</h3>
+                      <div class="weekly-report__detail">
+                        <div class="weekly-report__detail-item">
+                          <h4 class="weekly-report__detail-title">수업 내용</h4>
+                          <p class="weekly-report__detail-text">지수와 로그 단원을 학습했습니다. 기본 개념 이해도가 높고 문제 풀이 실력도 향상되었습니다.</p>
+                        </div>
+                        <div class="weekly-report__detail-item">
+                          <h4 class="weekly-report__detail-title">과제 피드백</h4>
+                          <p class="weekly-report__detail-text">과제를 성실히 제출했으며, 오답 정리도 잘 되어 있습니다. 다음 주에는 응용 문제에 더 집중해보세요.</p>
+                        </div>
+                        <div class="weekly-report__detail-item">
+                          <h4 class="weekly-report__detail-title">튜터 코멘트</h4>
+                          <p class="weekly-report__detail-text">이번 주 학습 태도가 매우 좋았습니다. 꾸준한 노력이 결과로 나타나고 있어 기대됩니다.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- 월별 리포트 (총평, 진도 브리핑 등) -->
+              <div id="parent-monthly" class="report-tabs__content">
+                <!-- 1. 월간 리포트 요약 카드 (시각화) -->
+                <section class="card card--report-summary" data-block="parent-report-summary">
+                  <header class="card__header">
+                    <h2 class="card__title">이번 달 학습 리포트 요약</h2>
+                    <div class="card__header-actions">
+                      <select class="report-month-select" name="month">
+                        <option value="current">이번 달</option>
+                        <option value="prev-1">지난 달</option>
+                        <option value="prev-2">2개월 전</option>
+                      </select>
+                    </div>
+                  </header>
+
+                  <div class="card__body report-summary">
+                    <!-- 학습 완성도 -->
+                    <div class="report-summary__item" data-metric="completion">
+                      <h3 class="report-summary__label">학습 완성도</h3>
+                      <p class="report-summary__value">본인 점수 vs 평균 점수</p>
+                      <div class="report-summary__chart report-summary__chart--line">
+                        <canvas id="parent-completion-chart"></canvas>
+                      </div>
+                    </div>
+
+                    <!-- 성취도 - 과제 수행률 -->
+                    <div class="report-summary__item" data-metric="achievement-assignment">
+                      <h3 class="report-summary__label">과제 수행률</h3>
+                      <p class="report-summary__value">90%</p>
+                      <div class="report-summary__chart report-summary__chart--donut">
+                        <canvas id="parent-assignment-chart"></canvas>
+                      </div>
+                    </div>
+
+                    <!-- 성취도 - 테스트 점수 -->
+                    <div class="report-summary__item" data-metric="achievement-test">
+                      <h3 class="report-summary__label">테스트 점수</h3>
+                      <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
+                      <div class="report-summary__chart report-summary__chart--donut">
+                        <canvas id="parent-test-chart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 2. 월별 총평 및 진도 브리핑 -->
+                <section class="card card--monthly-summary">
+                  <header class="card__header">
+                    <h2 class="card__title">월별 총평 및 진도 브리핑</h2>
+                  </header>
+                  <div class="card__body monthly-summary">
+                    <div class="monthly-summary__section">
+                      <h3 class="monthly-summary__title">이번 달 총평</h3>
+                      <p class="monthly-summary__text">
+                        이번 달 전반적인 학습 태도가 매우 우수했습니다. 출석률 100%, 과제 수행률 90%로 
+                        꾸준한 학습 습관이 형성되고 있습니다. 특히 지수와 로그 단원에서 기본 개념을 
+                        탄탄히 다져서 응용 문제 해결 능력이 향상되었습니다.
+                      </p>
+                    </div>
+
+                    <div class="monthly-summary__section">
+                      <h3 class="monthly-summary__title">진도 브리핑</h3>
+                      <div class="monthly-summary__progress">
+                        <div class="monthly-summary__progress-item">
+                          <span class="monthly-summary__progress-label">완료 단원</span>
+                          <span class="monthly-summary__progress-value">지수와 로그, 삼각함수 기초</span>
+                        </div>
+                        <div class="monthly-summary__progress-item">
+                          <span class="monthly-summary__progress-label">다음 단원</span>
+                          <span class="monthly-summary__progress-value">삼각함수 심화, 수열</span>
+                        </div>
+                        <div class="monthly-summary__progress-item">
+                          <span class="monthly-summary__progress-label">진도율</span>
+                          <span class="monthly-summary__progress-value">75%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="monthly-summary__section">
+                      <h3 class="monthly-summary__title">튜터 종합 평가</h3>
+                      <p class="monthly-summary__text">
+                        학습 의지가 강하고 자기주도적 학습 능력이 뛰어납니다. 앞으로도 현재의 학습 
+                        패턴을 유지하면서 약점 보완에 집중하면 더 큰 성장을 기대할 수 있습니다.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </section>
         </section>
 
         <!-- ========== [학부모] 매칭 탭 ========== -->
@@ -933,7 +1100,7 @@
             My 학습 홈
           </button>
           <button class="tab-nav__btn" data-tab="student-report">
-            월간 리포트
+            리포트
           </button>
           <button class="tab-nav__btn" data-tab="student-matching">
             매칭
@@ -1046,55 +1213,166 @@
 
         </section>
 
-        <!-- ========== [학생] 월간 리포트 탭 ========== -->
+        <!-- ========== [학생] 리포트 탭 ========== -->
         <section id="student-report" class="tab-panel" data-tab-panel="student-report" hidden>
-          
-          <!-- 1. 월간 리포트 요약 카드 (시각화) -->
-          <section class="card card--report-summary" data-block="student-report-summary">
-            <header class="card__header">
-              <h2 class="card__title">이번 달 내 학습 요약</h2>
-              <button class="link-button" type="button" data-action="open-full-report-student">
-                리포트 전체보기 →
-              </button>
-            </header>
-
-            <div class="card__body report-summary">
-              <!-- 학습 완성도 -->
-              <div class="report-summary__item" data-metric="completion">
-                <h3 class="report-summary__label">학습 완성도</h3>
-                <p class="report-summary__value">본인 점수 vs 평균 점수</p>
-                <div class="report-summary__chart report-summary__chart--line">
-                  <canvas id="student-completion-chart"></canvas>
-                </div>
-              </div>
-
-              <!-- 성취도 - 과제 수행률 -->
-              <div class="report-summary__item" data-metric="achievement-assignment">
-                <h3 class="report-summary__label">과제 수행률</h3>
-                <p class="report-summary__value">내 90% · 평균 85%</p>
-                <div class="report-summary__chart report-summary__chart--donut">
-                  <canvas id="student-assignment-chart"></canvas>
-                </div>
-              </div>
-
-              <!-- 성취도 - 테스트 점수 -->
-              <div class="report-summary__item" data-metric="achievement-test">
-                <h3 class="report-summary__label">테스트 점수</h3>
-                <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
-                <div class="report-summary__chart report-summary__chart--donut">
-                  <canvas id="student-test-chart"></canvas>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- 2. 리포트 상세 (테스트 분포, 튜터 코멘트 등) -->
-          <section class="card card--full-report" data-block="student-report-detail">
-            <header class="card__header">
-              <h2 class="card__title">월간 리포트 상세</h2>
-            </header>
+          <section class="card card--report-tabs">
             <div class="card__body">
-              <p>여기에 테스트 분포, 상/중/하위권 분포, 튜터 코멘트 등을 표시합니다.</p>
+              <!-- 리포트 서브 탭 네비게이션 -->
+              <div class="report-tabs">
+                <button class="report-tabs__btn report-tabs__btn--active" data-report-tab="student-weekly">
+                  주차별 리포트
+                </button>
+                <button class="report-tabs__btn" data-report-tab="student-monthly">
+                  월별 리포트
+                </button>
+              </div>
+
+              <!-- 주차별 리포트 (메인) -->
+              <div id="student-weekly" class="report-tabs__content report-tabs__content--active">
+                <section class="card card--weekly-report">
+                  <header class="card__header">
+                    <h2 class="card__title">주차별 학습 리포트</h2>
+                    <div class="card__header-actions">
+                      <select class="report-week-select" name="week">
+                        <option value="current">이번 주</option>
+                        <option value="week-1">1주차</option>
+                        <option value="week-2">2주차</option>
+                        <option value="week-3">3주차</option>
+                        <option value="week-4">4주차</option>
+                      </select>
+                    </div>
+                  </header>
+
+                  <div class="card__body weekly-report">
+                    <!-- 주차별 학습 현황 -->
+                    <div class="weekly-report__section">
+                      <h3 class="weekly-report__section-title">이번 주 학습 현황</h3>
+                      <div class="grid grid--three-columns">
+                        <div class="weekly-report__metric">
+                          <span class="weekly-report__metric-label">출석률</span>
+                          <span class="weekly-report__metric-value">100%</span>
+                        </div>
+                        <div class="weekly-report__metric">
+                          <span class="weekly-report__metric-label">과제 수행률</span>
+                          <span class="weekly-report__metric-value">90%</span>
+                        </div>
+                        <div class="weekly-report__metric">
+                          <span class="weekly-report__metric-label">테스트 점수</span>
+                          <span class="weekly-report__metric-value">85점</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- 주차별 상세 내용 -->
+                    <div class="weekly-report__section">
+                      <h3 class="weekly-report__section-title">주차별 상세 내용</h3>
+                      <div class="weekly-report__detail">
+                        <div class="weekly-report__detail-item">
+                          <h4 class="weekly-report__detail-title">수업 내용</h4>
+                          <p class="weekly-report__detail-text">지수와 로그 단원을 학습했습니다. 기본 개념 이해도가 높고 문제 풀이 실력도 향상되었습니다.</p>
+                        </div>
+                        <div class="weekly-report__detail-item">
+                          <h4 class="weekly-report__detail-title">과제 피드백</h4>
+                          <p class="weekly-report__detail-text">과제를 성실히 제출했으며, 오답 정리도 잘 되어 있습니다. 다음 주에는 응용 문제에 더 집중해보세요.</p>
+                        </div>
+                        <div class="weekly-report__detail-item">
+                          <h4 class="weekly-report__detail-title">튜터 코멘트</h4>
+                          <p class="weekly-report__detail-text">이번 주 학습 태도가 매우 좋았습니다. 꾸준한 노력이 결과로 나타나고 있어 기대됩니다.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- 월별 리포트 (총평, 진도 브리핑 등) -->
+              <div id="student-monthly" class="report-tabs__content">
+                <!-- 1. 월간 리포트 요약 카드 (시각화) -->
+                <section class="card card--report-summary" data-block="student-report-summary">
+                  <header class="card__header">
+                    <h2 class="card__title">이번 달 내 학습 요약</h2>
+                    <div class="card__header-actions">
+                      <select class="report-month-select" name="month">
+                        <option value="current">이번 달</option>
+                        <option value="prev-1">지난 달</option>
+                        <option value="prev-2">2개월 전</option>
+                      </select>
+                    </div>
+                  </header>
+
+                  <div class="card__body report-summary">
+                    <!-- 학습 완성도 -->
+                    <div class="report-summary__item" data-metric="completion">
+                      <h3 class="report-summary__label">학습 완성도</h3>
+                      <p class="report-summary__value">본인 점수 vs 평균 점수</p>
+                      <div class="report-summary__chart report-summary__chart--line">
+                        <canvas id="student-completion-chart"></canvas>
+                      </div>
+                    </div>
+
+                    <!-- 성취도 - 과제 수행률 -->
+                    <div class="report-summary__item" data-metric="achievement-assignment">
+                      <h3 class="report-summary__label">과제 수행률</h3>
+                      <p class="report-summary__value">내 90% · 평균 85%</p>
+                      <div class="report-summary__chart report-summary__chart--donut">
+                        <canvas id="student-assignment-chart"></canvas>
+                      </div>
+                    </div>
+
+                    <!-- 성취도 - 테스트 점수 -->
+                    <div class="report-summary__item" data-metric="achievement-test">
+                      <h3 class="report-summary__label">테스트 점수</h3>
+                      <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
+                      <div class="report-summary__chart report-summary__chart--donut">
+                        <canvas id="student-test-chart"></canvas>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- 2. 월별 총평 및 진도 브리핑 -->
+                <section class="card card--monthly-summary">
+                  <header class="card__header">
+                    <h2 class="card__title">월별 총평 및 진도 브리핑</h2>
+                  </header>
+                  <div class="card__body monthly-summary">
+                    <div class="monthly-summary__section">
+                      <h3 class="monthly-summary__title">이번 달 총평</h3>
+                      <p class="monthly-summary__text">
+                        이번 달 전반적인 학습 태도가 매우 우수했습니다. 출석률 100%, 과제 수행률 90%로 
+                        꾸준한 학습 습관이 형성되고 있습니다. 특히 지수와 로그 단원에서 기본 개념을 
+                        탄탄히 다져서 응용 문제 해결 능력이 향상되었습니다.
+                      </p>
+                    </div>
+
+                    <div class="monthly-summary__section">
+                      <h3 class="monthly-summary__title">진도 브리핑</h3>
+                      <div class="monthly-summary__progress">
+                        <div class="monthly-summary__progress-item">
+                          <span class="monthly-summary__progress-label">완료 단원</span>
+                          <span class="monthly-summary__progress-value">지수와 로그, 삼각함수 기초</span>
+                        </div>
+                        <div class="monthly-summary__progress-item">
+                          <span class="monthly-summary__progress-label">다음 단원</span>
+                          <span class="monthly-summary__progress-value">삼각함수 심화, 수열</span>
+                        </div>
+                        <div class="monthly-summary__progress-item">
+                          <span class="monthly-summary__progress-label">진도율</span>
+                          <span class="monthly-summary__progress-value">75%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="monthly-summary__section">
+                      <h3 class="monthly-summary__title">튜터 종합 평가</h3>
+                      <p class="monthly-summary__text">
+                        학습 의지가 강하고 자기주도적 학습 능력이 뛰어납니다. 앞으로도 현재의 학습 
+                        패턴을 유지하면서 약점 보완에 집중하면 더 큰 성장을 기대할 수 있습니다.
+                      </p>
+                    </div>
+                  </div>
+                </section>
+              </div>
             </div>
           </section>
         </section>

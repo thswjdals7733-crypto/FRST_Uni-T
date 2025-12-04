@@ -1880,6 +1880,39 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // ============================================
+  // 8. 리포트 탭 전환 (학생/학부모)
+  // ============================================
+  const reportTabs = document.querySelectorAll('.report-tabs__btn');
+  reportTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      const targetTab = this.getAttribute('data-report-tab');
+      const tabsContainer = this.closest('.report-tabs');
+      const contentContainer = tabsContainer?.parentElement;
+      
+      if (!contentContainer) return;
+      
+      // 모든 탭 비활성화
+      tabsContainer.querySelectorAll('.report-tabs__btn').forEach(t => {
+        t.classList.remove('report-tabs__btn--active');
+      });
+      
+      // 모든 콘텐츠 숨기기
+      contentContainer.querySelectorAll('.report-tabs__content').forEach(c => {
+        c.classList.remove('report-tabs__content--active');
+      });
+      
+      // 현재 탭 활성화
+      this.classList.add('report-tabs__btn--active');
+      
+      // 해당 콘텐츠 표시
+      const targetContent = document.getElementById(targetTab);
+      if (targetContent) {
+        targetContent.classList.add('report-tabs__content--active');
+      }
+    });
+  });
+
   // 모집글 작성 취소
   const cancelRecruitBtns = document.querySelectorAll('[data-action="cancel-recruit"]');
   cancelRecruitBtns.forEach(btn => {
