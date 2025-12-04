@@ -92,17 +92,16 @@
             </header>
 
             <div class="card__body report-summary">
-              <!-- 1-1. 팀 내 위치 수평 막대 그래프 -->
-              <div class="report-summary__item" data-metric="rank">
-                <h3 class="report-summary__label">팀 내 위치</h3>
-                <p class="report-summary__value">전체 N명 중 2위</p>
-                <!-- 실제 그래프는 나중에 캔버스/차트 라이브러리로 -->
-                <div class="report-summary__chart report-summary__chart--bar">
-                  <canvas id="parent-rank-chart"></canvas>
+              <!-- 학습 완성도 -->
+              <div class="report-summary__item" data-metric="completion">
+                <h3 class="report-summary__label">학습 완성도</h3>
+                <p class="report-summary__value">본인 점수 vs 평균 점수</p>
+                <div class="report-summary__chart report-summary__chart--line">
+                  <canvas id="parent-completion-chart"></canvas>
                 </div>
               </div>
 
-              <!-- 1-2. 성취도 - 과제 수행률 -->
+              <!-- 성취도 - 과제 수행률 -->
               <div class="report-summary__item" data-metric="achievement-assignment">
                 <h3 class="report-summary__label">과제 수행률</h3>
                 <p class="report-summary__value">90%</p>
@@ -111,21 +110,12 @@
                 </div>
               </div>
 
-              <!-- 1-3. 성취도 - 테스트 점수 -->
+              <!-- 성취도 - 테스트 점수 -->
               <div class="report-summary__item" data-metric="achievement-test">
                 <h3 class="report-summary__label">테스트 점수</h3>
                 <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
                 <div class="report-summary__chart report-summary__chart--donut">
                   <canvas id="parent-test-chart"></canvas>
-                </div>
-              </div>
-
-              <!-- 1-3. 학습 패턴 변화 꺾은선 미니 그래프 -->
-              <div class="report-summary__item" data-metric="trend">
-                <h3 class="report-summary__label">학습 패턴</h3>
-                <p class="report-summary__value">지난달 대비 ▲5점</p>
-                <div class="report-summary__chart report-summary__chart--line">
-                  <canvas id="parent-trend-chart"></canvas>
                 </div>
               </div>
             </div>
@@ -363,121 +353,331 @@
 
         <!-- ========== [학부모] 매칭 탭 ========== -->
         <section id="parent-matching" class="tab-panel" data-tab-panel="parent-matching" hidden>
-          <!-- 팀 매칭/모집 게시판 -->
-          <section class="card card--team-board" data-block="parent-team-board">
+          <section class="card card--matching" data-block="parent-matching">
             <header class="card__header">
-              <h2 class="card__title">팀 매칭 / 모집 게시판</h2>
-              <p class="card__meta">자녀에게 맞는 팀을 찾거나 새로운 팀을 모집할 수 있습니다.</p>
+              <h2 class="card__title">수업 현황</h2>
+              <p class="card__meta">자녀의 수업 매칭 현황을 확인하고 관리할 수 있습니다.</p>
             </header>
 
-            <div class="card__body team-board">
-              <!-- 필터 영역 -->
-              <div class="team-board__filters">
-                <select class="team-board__filter" name="subject" data-filter="subject">
-                  <option value="">과목 선택</option>
-                  <option value="math">수학</option>
-                  <option value="english">영어</option>
-                  <option value="korean">국어</option>
-                </select>
-                <select class="team-board__filter" name="grade" data-filter="grade">
-                  <option value="">학년 선택</option>
-                  <option value="hs1">고1</option>
-                  <option value="hs2">고2</option>
-                  <option value="hs3">고3</option>
-                </select>
-                <select class="team-board__filter" name="current-grade" data-filter="current-grade">
-                  <option value="">현재 등급</option>
-                  <option value="1">1등급</option>
-                  <option value="2">2등급</option>
-                  <option value="3">3등급</option>
-                  <option value="4">4등급</option>
-                  <option value="5">5등급</option>
-                </select>
-                <select class="team-board__filter" name="target" data-filter="target">
-                  <option value="">목표 등급</option>
-                  <option value="1">1등급</option>
-                  <option value="2">2등급</option>
-                  <option value="3">3등급</option>
-                </select>
-                <select class="team-board__filter" name="gender" data-filter="gender">
-                  <option value="">성별 선택</option>
-                  <option value="male">남학생</option>
-                  <option value="female">여학생</option>
-                  <option value="mixed">혼성</option>
-                </select>
-                <select class="team-board__filter" name="time" data-filter="time">
-                  <option value="">수업 시간</option>
-                  <option value="sat-19">토요일 19시</option>
-                  <option value="sun-14">일요일 14시</option>
-                  <option value="weekday">평일 저녁</option>
-                </select>
-                <select class="team-board__filter" name="school" data-filter="school">
-                  <option value="">학교 선택</option>
-                  <option value="sm">숙명여고</option>
-                  <option value="hm">휘문고</option>
-                  <option value="etc">기타</option>
-                </select>
-              </div>
-
-              <!-- 팀 카드 리스트 -->
-              <div class="team-board__list">
-                <!-- 예시 카드 -->
-                <article class="team-card">
-                  <div class="team-card__header">
-                    <h3 class="team-card__title">숙명여고 2학년 수학 1등급 목표반</h3>
-                    <span class="team-card__badge team-card__badge--available">모집 중</span>
-                  </div>
-                  <p class="team-card__meta">
-                    잔여 1석 · 거리 1.2km · 수업 시간: 토 19시
-                  </p>
-                  <p class="team-card__description">
-                    현재 3명이 함께 공부하고 있습니다. 목표 등급 달성을 위한 체계적인 학습 계획이 준비되어 있습니다.
-                  </p>
-                  <div class="team-card__info">
-                    <span class="team-card__info-item">튜터: 김튜터</span>
-                    <span class="team-card__info-item">월 수강료: 40만원 (4명 기준)</span>
-                  </div>
-                  <div class="team-card__actions">
-                    <button class="btn btn--primary" type="button" data-action="apply-team">
-                      가입 신청
-                    </button>
-                    <button class="btn btn--ghost" type="button" data-action="view-team-detail">
-                      상세 보기
-                    </button>
-                  </div>
-                </article>
-
-                <article class="team-card">
-                  <div class="team-card__header">
-                    <h3 class="team-card__title">휘문고 1학년 수학 2등급 목표반</h3>
-                    <span class="team-card__badge team-card__badge--available">모집 중</span>
-                  </div>
-                  <p class="team-card__meta">
-                    잔여 2석 · 거리 2.5km · 수업 시간: 일 14시
-                  </p>
-                  <p class="team-card__description">
-                    기초부터 탄탄하게 다지는 수학 팀입니다. 친화적인 분위기에서 함께 성장합니다.
-                  </p>
-                  <div class="team-card__info">
-                    <span class="team-card__info-item">튜터: 박튜터</span>
-                    <span class="team-card__info-item">월 수강료: 35만원 (5명 기준)</span>
-                  </div>
-                  <div class="team-card__actions">
-                    <button class="btn btn--primary" type="button" data-action="apply-team">
-                      가입 신청
-                    </button>
-                    <button class="btn btn--ghost" type="button" data-action="view-team-detail">
-                      상세 보기
-                    </button>
-                  </div>
-                </article>
-              </div>
-
-              <!-- 새 팀 모집글 작성 -->
-              <div class="team-board__new">
-                <button class="btn btn--secondary" type="button" data-action="create-team-post">
-                  새 팀 모집글 작성
+            <div class="card__body matching-board">
+              <!-- 탭 네비게이션 -->
+              <div class="matching-board__tabs">
+                <button class="matching-board__tab matching-board__tab--active" data-tab="parent-matching-progress">
+                  매칭 진행 중
                 </button>
+                <button class="matching-board__tab" data-tab="parent-matching-ongoing">
+                  수업 관리
+                </button>
+                <button class="matching-board__tab" data-tab="parent-matching-create">
+                  모집글 작성
+                </button>
+              </div>
+
+              <!-- 매칭 진행 중 탭 -->
+              <div id="parent-matching-progress" class="matching-board__content matching-board__content--active">
+                <div class="matching-cards">
+                  <!-- 매칭 완료 카드 -->
+                  <article class="matching-card matching-card--completed">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--completed"></div>
+                      <span class="status-text status-text--completed">매칭 완료</span>
+                    </div>
+                    
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고등학교 2학년 수학1</h3>
+                      <p class="matching-card__details">지수와 로그 • 주 2회 • 90분 수업</p>
+                    </div>
+                    
+                    <div class="matching-card__progress">
+                      <span class="progress-fraction">5/5</span>
+                      <div class="progress-bar">
+                        <div class="progress-fill progress-fill--completed" style="width: 100%;"></div>
+                      </div>
+                      <span class="progress-text">매칭 완료</span>
+                    </div>
+                    
+                    <div class="matching-card__percentile">
+                      <div class="percentile-row">
+                        <span class="percentile-label">현재 평균</span>
+                        <span class="percentile-value">94.2%</span>
+                      </div>
+                      <div class="percentile-row">
+                        <span class="percentile-label">목표 평균</span>
+                        <span class="percentile-value percentile-value--target">96.5%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__price">
+                      <span class="price-label">가격</span>
+                      <span class="price-value">₩120,000/5명</span>
+                    </div>
+                    
+                    <div class="matching-card__students">
+                      <div class="student-item">
+                        <div class="student-avatar">이</div>
+                        <div class="student-info">
+                          <span class="student-name">이지은 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">박</div>
+                        <div class="student-info">
+                          <span class="student-name">박준호 (남, 17세)</span>
+                          <span class="student-region">서초구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">김</div>
+                        <div class="student-info">
+                          <span class="student-name">김서연 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">최</div>
+                        <div class="student-info">
+                          <span class="student-name">최민수 (남, 17세)</span>
+                          <span class="student-region">서초구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">정</div>
+                        <div class="student-info">
+                          <span class="student-name">정다은 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+
+                  <!-- 매칭 진행 중 카드 -->
+                  <article class="matching-card matching-card--active">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--active"></div>
+                      <span class="status-text status-text--active">매칭 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고등학교 2학년 수학2</h3>
+                      <p class="matching-card__details">주 1회 • 60분 수업</p>
+                    </div>
+                    
+                    <div class="matching-card__progress">
+                      <span class="progress-fraction">1/4</span>
+                      <div class="progress-bar">
+                        <div class="progress-fill progress-fill--active" style="width: 25%;"></div>
+                      </div>
+                      <span class="progress-text">25% 완료</span>
+                    </div>
+                    
+                    <div class="matching-card__percentile">
+                      <div class="percentile-row">
+                        <span class="percentile-label">현재 평균</span>
+                        <span class="percentile-value">91.0%</span>
+                      </div>
+                      <div class="percentile-row">
+                        <span class="percentile-label">목표 평균</span>
+                        <span class="percentile-value percentile-value--target">93.0%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__price">
+                      <span class="price-label">가격</span>
+                      <span class="price-value">₩130,000/4명</span>
+                    </div>
+                    
+                    <div class="matching-card__students">
+                      <div class="student-item">
+                        <div class="student-avatar">최</div>
+                        <div class="student-info">
+                          <span class="student-name">최민수 (남, 17세)</span>
+                          <span class="student-region">송파구</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+
+                  <!-- 새 그룹 만들기 카드 -->
+                  <article class="matching-card matching-card--new" data-action="create-new-group">
+                    <div class="matching-card__new-content">
+                      <div class="new-group-icon">+</div>
+                      <div class="new-group-text">
+                        <h3 class="new-group-title">새 그룹 만들기</h3>
+                        <p class="new-group-subtitle">새로운 수업 그룹을 생성하세요</p>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <!-- 수업 관리 탭 -->
+              <div id="parent-matching-ongoing" class="matching-board__content">
+                <div class="matching-cards">
+                  <article class="matching-card matching-card--completed">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--completed"></div>
+                      <span class="status-text status-text--completed">수업 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고등학교 2학년 수학1</h3>
+                      <p class="matching-card__details">지수와 로그 • 주 2회 • 90분 수업</p>
+                    </div>
+                    
+                    <div class="matching-card__progress">
+                      <span class="progress-fraction">5/5</span>
+                      <div class="progress-bar">
+                        <div class="progress-fill progress-fill--completed" style="width: 100%;"></div>
+                      </div>
+                      <span class="progress-text">수업 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__percentile">
+                      <div class="percentile-row">
+                        <span class="percentile-label">현재 평균</span>
+                        <span class="percentile-value">94.2%</span>
+                      </div>
+                      <div class="percentile-row">
+                        <span class="percentile-label">목표 평균</span>
+                        <span class="percentile-value percentile-value--target">96.5%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__price">
+                      <span class="price-label">가격</span>
+                      <span class="price-value">₩120,000/5명</span>
+                    </div>
+                    
+                    <div class="matching-card__students">
+                      <div class="student-item">
+                        <div class="student-avatar">이</div>
+                        <div class="student-info">
+                          <span class="student-name">이지은 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">박</div>
+                        <div class="student-info">
+                          <span class="student-name">박준호 (남, 17세)</span>
+                          <span class="student-region">서초구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">김</div>
+                        <div class="student-info">
+                          <span class="student-name">김서연 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">최</div>
+                        <div class="student-info">
+                          <span class="student-name">최민수 (남, 17세)</span>
+                          <span class="student-region">서초구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">정</div>
+                        <div class="student-info">
+                          <span class="student-name">정다은 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <!-- 모집글 작성 탭 -->
+              <div id="parent-matching-create" class="matching-board__content">
+                <section class="card card--recruit-form">
+                  <header class="card__header">
+                    <h2 class="card__title">새 팀 모집글 작성</h2>
+                    <p class="card__meta">자녀에게 맞는 팀을 모집하거나 새로운 팀을 만들 수 있습니다.</p>
+                  </header>
+
+                  <div class="card__body recruit-form">
+                    <form class="recruit-form__form" data-action="create-recruit-post">
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>과목</span>
+                          <select class="recruit-form__select" name="subject" required>
+                            <option value="">선택하세요</option>
+                            <option value="math">수학</option>
+                            <option value="english">영어</option>
+                            <option value="korean">국어</option>
+                            <option value="science">과학</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>학년</span>
+                          <select class="recruit-form__select" name="grade" required>
+                            <option value="">선택하세요</option>
+                            <option value="hs1">고1</option>
+                            <option value="hs2">고2</option>
+                            <option value="hs3">고3</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>목표 등급</span>
+                          <select class="recruit-form__select" name="target-grade" required>
+                            <option value="">선택하세요</option>
+                            <option value="1">1등급</option>
+                            <option value="2">2등급</option>
+                            <option value="3">3등급</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>모집 인원</span>
+                          <input type="number" class="recruit-form__input" name="capacity" min="2" max="8" value="4" required>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>수업 시간</span>
+                          <select class="recruit-form__select" name="time" required>
+                            <option value="">선택하세요</option>
+                            <option value="sat-19">토요일 19시</option>
+                            <option value="sun-14">일요일 14시</option>
+                            <option value="weekday">평일 저녁</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>월 수강료 (1인 기준)</span>
+                          <input type="number" class="recruit-form__input" name="price" placeholder="예: 400000" required>
+                        </label>
+                        <p class="recruit-form__hint">인원이 모이면 자동으로 할인됩니다.</p>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>모집 설명</span>
+                          <textarea class="recruit-form__textarea" name="description" rows="4" placeholder="팀에 대한 설명을 작성해주세요." required></textarea>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__actions">
+                        <button class="btn btn--secondary" type="button" data-action="cancel-recruit">취소</button>
+                        <button class="btn btn--primary" type="submit">모집글 등록</button>
+                      </div>
+                    </form>
+                  </div>
+                </section>
               </div>
             </div>
           </section>
@@ -619,12 +819,12 @@
             </header>
 
             <div class="card__body report-summary">
-              <!-- 팀 내 위치 -->
-              <div class="report-summary__item" data-metric="rank">
-                <h3 class="report-summary__label">팀 내 위치</h3>
-                <p class="report-summary__value">전체 N명 중 2위</p>
-                <div class="report-summary__chart report-summary__chart--bar">
-                  <canvas id="student-rank-chart"></canvas>
+              <!-- 학습 완성도 -->
+              <div class="report-summary__item" data-metric="completion">
+                <h3 class="report-summary__label">학습 완성도</h3>
+                <p class="report-summary__value">본인 점수 vs 평균 점수</p>
+                <div class="report-summary__chart report-summary__chart--line">
+                  <canvas id="student-completion-chart"></canvas>
                 </div>
               </div>
 
@@ -643,15 +843,6 @@
                 <p class="report-summary__value">내 점수 85점 · 평균 80점</p>
                 <div class="report-summary__chart report-summary__chart--donut">
                   <canvas id="student-test-chart"></canvas>
-                </div>
-              </div>
-
-              <!-- 학습 패턴 변화 -->
-              <div class="report-summary__item" data-metric="trend">
-                <h3 class="report-summary__label">학습 패턴</h3>
-                <p class="report-summary__value">지난달 대비 ▲5점</p>
-                <div class="report-summary__chart report-summary__chart--line">
-                  <canvas id="student-trend-chart"></canvas>
                 </div>
               </div>
             </div>
@@ -809,7 +1000,7 @@
            (기본은 숨김, tutor 모드에서 표시)
       ================================ -->
       <section class="dashboard dashboard--tutor" data-role="tutor" hidden>
-        <!-- 튜터 모드 상단 탭: 홈 / 클래스 관리 / 스케줄·자료 / 알림센터 -->
+        <!-- 튜터 모드 상단 탭: 홈 / 클래스 관리 / 스케줄·자료 / 매칭 -->
         <nav class="tab-nav" data-component="tutor-tabs">
           <button class="tab-nav__btn tab-nav__btn--active" data-tab="tutor-home">
             홈
@@ -819,6 +1010,9 @@
           </button>
           <button class="tab-nav__btn" data-tab="tutor-schedule">
             스케줄 · 자료
+          </button>
+          <button class="tab-nav__btn" data-tab="tutor-matching">
+            매칭
           </button>
         </nav>
 
@@ -911,6 +1105,113 @@
 
         <!-- ========== [튜터] 클래스 관리 탭 ========== -->
         <section id="tutor-classes" class="tab-panel" data-tab-panel="tutor-classes" hidden>
+          <!-- 클래스 관리 상단: 신규 학생 승인, 모집 마감, 학생 관리 -->
+          <section class="card card--class-management" data-block="tutor-class-management">
+            <header class="card__header">
+              <h2 class="card__title">클래스 관리</h2>
+              <p class="card__meta">신규 학생 승인, 모집 마감, 학생 관리를 할 수 있습니다.</p>
+            </header>
+
+            <div class="card__body class-management">
+              <!-- 신규 학생 승인 대기 -->
+              <div class="class-management__section">
+                <h3 class="class-management__section-title">신규 학생 승인 대기</h3>
+                <div class="class-management__pending-students">
+                  <div class="pending-student-item">
+                    <div class="pending-student__info">
+                      <div class="pending-student__avatar">김</div>
+                      <div class="pending-student__details">
+                        <span class="pending-student__name">김민수 (남, 17세)</span>
+                        <span class="pending-student__meta">고2 · 수학2 · 현재 등급: 2등급 · 목표 등급: 1등급</span>
+                        <span class="pending-student__time">신청일: 2025년 11월 28일</span>
+                      </div>
+                    </div>
+                    <div class="pending-student__actions">
+                      <button class="btn btn--primary" type="button" data-action="approve-student" data-student="김민수">승인</button>
+                      <button class="btn btn--secondary" type="button" data-action="reject-student" data-student="김민수">거절</button>
+                    </div>
+                  </div>
+
+                  <div class="pending-student-item">
+                    <div class="pending-student__info">
+                      <div class="pending-student__avatar">이</div>
+                      <div class="pending-student__details">
+                        <span class="pending-student__name">이서연 (여, 17세)</span>
+                        <span class="pending-student__meta">고2 · 수학2 · 현재 등급: 3등급 · 목표 등급: 2등급</span>
+                        <span class="pending-student__time">신청일: 2025년 11월 27일</span>
+                      </div>
+                    </div>
+                    <div class="pending-student__actions">
+                      <button class="btn btn--primary" type="button" data-action="approve-student" data-student="이서연">승인</button>
+                      <button class="btn btn--secondary" type="button" data-action="reject-student" data-student="이서연">거절</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 현재 수업 정보 -->
+              <div class="class-management__section">
+                <h3 class="class-management__section-title">현재 수업 정보</h3>
+                <div class="class-management__current-class">
+                  <div class="current-class__info">
+                    <h4 class="current-class__title">고등학교 2학년 수학2</h4>
+                    <p class="current-class__meta">주 1회 · 60분 수업 · 현재 3/4명</p>
+                  </div>
+                  <div class="current-class__actions">
+                    <button class="btn btn--secondary" type="button" data-action="close-recruitment">모집 마감</button>
+                    <button class="btn btn--ghost" type="button" data-action="reopen-recruitment" hidden>모집 재개</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 학생 명단 관리 -->
+              <div class="class-management__section">
+                <h3 class="class-management__section-title">학생 명단</h3>
+                <div class="class-management__student-list">
+                  <div class="student-list-item">
+                    <div class="student-list-item__info">
+                      <div class="student-list-item__avatar">홍</div>
+                      <div class="student-list-item__details">
+                        <span class="student-list-item__name">홍길동</span>
+                        <span class="student-list-item__meta">고2 · 남, 17세 · 강남구</span>
+                      </div>
+                    </div>
+                    <div class="student-list-item__actions">
+                      <button class="btn btn--ghost btn--small" type="button" data-action="request-remove-student" data-student="홍길동">제외 요청</button>
+                    </div>
+                  </div>
+
+                  <div class="student-list-item">
+                    <div class="student-list-item__info">
+                      <div class="student-list-item__avatar">김</div>
+                      <div class="student-list-item__details">
+                        <span class="student-list-item__name">김철수</span>
+                        <span class="student-list-item__meta">고2 · 남, 17세 · 서초구</span>
+                      </div>
+                    </div>
+                    <div class="student-list-item__actions">
+                      <button class="btn btn--ghost btn--small" type="button" data-action="request-remove-student" data-student="김철수">제외 요청</button>
+                    </div>
+                  </div>
+
+                  <div class="student-list-item">
+                    <div class="student-list-item__info">
+                      <div class="student-list-item__avatar">이</div>
+                      <div class="student-list-item__details">
+                        <span class="student-list-item__name">이영희</span>
+                        <span class="student-list-item__meta">고2 · 여, 17세 · 강남구</span>
+                      </div>
+                    </div>
+                    <div class="student-list-item__actions">
+                      <button class="btn btn--ghost btn--small" type="button" data-action="request-remove-student" data-student="이영희">제외 요청</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- 리포트 작성 -->
           <section class="card card--class-mode" data-block="tutor-class-mode">
             <header class="card__header">
               <h2 class="card__title">수업 모드 (3분 입력으로 리포트 완료)</h2>
@@ -1150,6 +1451,339 @@
               </div>
             </section>
           </div>
+        </section>
+
+        <!-- ========== [튜터] 매칭 탭 ========== -->
+        <section id="tutor-matching" class="tab-panel" data-tab-panel="tutor-matching" hidden>
+          <section class="card card--matching" data-block="tutor-matching">
+            <header class="card__header">
+              <h2 class="card__title">수업 현황</h2>
+              <p class="card__meta">수업 매칭 현황을 확인하고 관리할 수 있습니다.</p>
+            </header>
+
+            <div class="card__body matching-board">
+              <!-- 탭 네비게이션 -->
+              <div class="matching-board__tabs">
+                <button class="matching-board__tab matching-board__tab--active" data-tab="tutor-matching-progress">
+                  매칭 진행 중
+                </button>
+                <button class="matching-board__tab" data-tab="tutor-matching-ongoing">
+                  수업 진행 중
+                </button>
+                <button class="matching-board__tab" data-tab="tutor-matching-create">
+                  모집글 작성
+                </button>
+              </div>
+
+              <!-- 매칭 진행 중 탭 -->
+              <div id="tutor-matching-progress" class="matching-board__content matching-board__content--active">
+                <div class="matching-cards">
+                  <!-- 매칭 진행 중 카드 -->
+                  <article class="matching-card matching-card--active">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--active"></div>
+                      <span class="status-text status-text--active">매칭 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고등학교 2학년 수학2</h3>
+                      <p class="matching-card__details">주 1회 • 60분 수업</p>
+                    </div>
+                    
+                    <div class="matching-card__progress">
+                      <span class="progress-fraction">1/4</span>
+                      <div class="progress-bar">
+                        <div class="progress-fill progress-fill--active" style="width: 25%;"></div>
+                      </div>
+                      <span class="progress-text">25% 완료</span>
+                    </div>
+                    
+                    <div class="matching-card__percentile">
+                      <div class="percentile-row">
+                        <span class="percentile-label">현재 평균</span>
+                        <span class="percentile-value">91.0%</span>
+                      </div>
+                      <div class="percentile-row">
+                        <span class="percentile-label">목표 평균</span>
+                        <span class="percentile-value percentile-value--target">93.0%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__price">
+                      <span class="price-label">가격</span>
+                      <span class="price-value">₩130,000/4명 (₩32,500/시간)</span>
+                    </div>
+                    
+                    <div class="matching-card__students">
+                      <div class="student-item">
+                        <div class="student-avatar">최</div>
+                        <div class="student-info">
+                          <span class="student-name">최민수 (남, 17세)</span>
+                          <span class="student-region">송파구</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__actions">
+                      <button class="btn btn--primary" type="button" data-action="tutor-join-class">
+                        참가하기
+                      </button>
+                    </div>
+                  </article>
+
+                  <!-- 매칭 진행 중 카드 2 -->
+                  <article class="matching-card matching-card--active">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--active"></div>
+                      <span class="status-text status-text--active">매칭 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고등학교 3학년 미적분</h3>
+                      <p class="matching-card__details">미분법 • 주 2회 • 75분 수업</p>
+                    </div>
+                    
+                    <div class="matching-card__progress">
+                      <span class="progress-fraction">2/6</span>
+                      <div class="progress-bar">
+                        <div class="progress-fill progress-fill--active" style="width: 33%;"></div>
+                      </div>
+                      <span class="progress-text">33% 완료</span>
+                    </div>
+                    
+                    <div class="matching-card__percentile">
+                      <div class="percentile-row">
+                        <span class="percentile-label">현재 평균</span>
+                        <span class="percentile-value">95.5%</span>
+                      </div>
+                      <div class="percentile-row">
+                        <span class="percentile-label">목표 평균</span>
+                        <span class="percentile-value percentile-value--target">97.0%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__price">
+                      <span class="price-label">가격</span>
+                      <span class="price-value">₩150,000/6명 (₩25,000/시간)</span>
+                    </div>
+                    
+                    <div class="matching-card__students">
+                      <div class="student-item">
+                        <div class="student-avatar">정</div>
+                        <div class="student-info">
+                          <span class="student-name">정다은 (여, 18세)</span>
+                          <span class="student-region">마포구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">한</div>
+                        <div class="student-info">
+                          <span class="student-name">한지우 (남, 18세)</span>
+                          <span class="student-region">서대문구</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__actions">
+                      <button class="btn btn--primary" type="button" data-action="tutor-join-class">
+                        참가하기
+                      </button>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <!-- 수업 진행 중 탭 -->
+              <div id="tutor-matching-ongoing" class="matching-board__content">
+                <div class="matching-cards">
+                  <article class="matching-card matching-card--completed">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--completed"></div>
+                      <span class="status-text status-text--completed">수업 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고등학교 2학년 수학1</h3>
+                      <p class="matching-card__details">지수와 로그 • 주 2회 • 90분 수업</p>
+                    </div>
+                    
+                    <div class="matching-card__progress">
+                      <span class="progress-fraction">5/5</span>
+                      <div class="progress-bar">
+                        <div class="progress-fill progress-fill--completed" style="width: 100%;"></div>
+                      </div>
+                      <span class="progress-text">수업 진행 중</span>
+                    </div>
+                    
+                    <div class="matching-card__percentile">
+                      <div class="percentile-row">
+                        <span class="percentile-label">현재 평균</span>
+                        <span class="percentile-value">94.2%</span>
+                      </div>
+                      <div class="percentile-row">
+                        <span class="percentile-label">목표 평균</span>
+                        <span class="percentile-value percentile-value--target">96.5%</span>
+                      </div>
+                    </div>
+                    
+                    <div class="matching-card__price">
+                      <span class="price-label">가격</span>
+                      <span class="price-value">₩120,000/5명 (₩24,000/시간)</span>
+                    </div>
+                    
+                    <div class="matching-card__students">
+                      <div class="student-item">
+                        <div class="student-avatar">이</div>
+                        <div class="student-info">
+                          <span class="student-name">이지은 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">박</div>
+                        <div class="student-info">
+                          <span class="student-name">박준호 (남, 17세)</span>
+                          <span class="student-region">서초구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">김</div>
+                        <div class="student-info">
+                          <span class="student-name">김서연 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">최</div>
+                        <div class="student-info">
+                          <span class="student-name">최민수 (남, 17세)</span>
+                          <span class="student-region">서초구</span>
+                        </div>
+                      </div>
+                      <div class="student-item">
+                        <div class="student-avatar">정</div>
+                        <div class="student-info">
+                          <span class="student-name">정다은 (여, 17세)</span>
+                          <span class="student-region">강남구</span>
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
+              <!-- 모집글 작성 탭 -->
+              <div id="tutor-matching-create" class="matching-board__content">
+                <section class="card card--recruit-form">
+                  <header class="card__header">
+                    <h2 class="card__title">새 수업 모집글 작성</h2>
+                    <p class="card__meta">새로운 수업을 모집하고 학생들을 매칭할 수 있습니다.</p>
+                  </header>
+
+                  <div class="card__body recruit-form">
+                    <form class="recruit-form__form" data-action="create-tutor-recruit-post">
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>과목</span>
+                          <select class="recruit-form__select" name="subject" required>
+                            <option value="">선택하세요</option>
+                            <option value="math">수학</option>
+                            <option value="english">영어</option>
+                            <option value="korean">국어</option>
+                            <option value="science">과학</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>학년</span>
+                          <select class="recruit-form__select" name="grade" required>
+                            <option value="">선택하세요</option>
+                            <option value="hs1">고1</option>
+                            <option value="hs2">고2</option>
+                            <option value="hs3">고3</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>단원/내용</span>
+                          <input type="text" class="recruit-form__input" name="unit" placeholder="예: 지수와 로그" required>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>모집 인원</span>
+                          <input type="number" class="recruit-form__input" name="capacity" min="2" max="8" value="4" required>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>주당 수업 횟수</span>
+                          <select class="recruit-form__select" name="frequency" required>
+                            <option value="">선택하세요</option>
+                            <option value="1">주 1회</option>
+                            <option value="2">주 2회</option>
+                            <option value="3">주 3회</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>수업 시간 (분)</span>
+                          <input type="number" class="recruit-form__input" name="duration" placeholder="예: 90" required>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>수업 시간대</span>
+                          <select class="recruit-form__select" name="time" required>
+                            <option value="">선택하세요</option>
+                            <option value="sat-19">토요일 19시</option>
+                            <option value="sun-14">일요일 14시</option>
+                            <option value="weekday">평일 저녁</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>월 수강료 (총액)</span>
+                          <input type="number" class="recruit-form__input" name="price" placeholder="예: 520000" required>
+                        </label>
+                        <p class="recruit-form__hint">인원이 모이면 자동으로 할인됩니다.</p>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>목표 평균 백분위</span>
+                          <input type="number" class="recruit-form__input" name="target-percentile" placeholder="예: 93" min="0" max="100" required>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__group">
+                        <label class="recruit-form__label">
+                          <span>수업 설명</span>
+                          <textarea class="recruit-form__textarea" name="description" rows="4" placeholder="수업에 대한 설명을 작성해주세요." required></textarea>
+                        </label>
+                      </div>
+
+                      <div class="recruit-form__actions">
+                        <button class="btn btn--secondary" type="button" data-action="cancel-recruit">취소</button>
+                        <button class="btn btn--primary" type="submit">모집글 등록</button>
+                      </div>
+                    </form>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </section>
         </section>
 
       </section>

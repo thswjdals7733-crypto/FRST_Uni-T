@@ -7,7 +7,123 @@ const chartInstances = {};
 // 차트 렌더링 함수들
 // ============================================
 
-// 팀 내 위치 세로 막대 그래프 (등수가 높을수록 막대가 높게)
+// 학습 완성도 꺾은선 그래프 (본인 점수 vs 평균 점수)
+function renderCompletionChart(canvasId, myScores, avgScores) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+
+  // 기존 차트가 있으면 제거
+  if (chartInstances[canvasId]) {
+    chartInstances[canvasId].destroy();
+  }
+
+  // 월별 라벨 (예: 9월, 10월, 11월)
+  const labels = myScores.map((_, i) => `${i + 1}주차`);
+  
+  chartInstances[canvasId] = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '본인 점수',
+          data: myScores,
+          borderColor: 'rgba(4, 89, 240, 1)',
+          backgroundColor: 'rgba(4, 89, 240, 0.1)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'rgba(4, 89, 240, 1)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        },
+        {
+          label: '평균 점수',
+          data: avgScores,
+          borderColor: 'rgba(107, 114, 128, 0.6)',
+          backgroundColor: 'rgba(107, 114, 128, 0.1)',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          fill: false,
+          tension: 0.4,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          pointBackgroundColor: 'rgba(107, 114, 128, 0.6)',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom',
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: {
+              size: 12
+            },
+            color: 'rgba(0, 0, 0, 0.8)'
+          }
+        },
+        tooltip: {
+          enabled: true,
+          mode: 'index',
+          intersect: false,
+          callbacks: {
+            label: function(context) {
+              return `${context.dataset.label}: ${context.parsed.y}점`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          display: true,
+          grid: {
+            display: false
+          },
+          ticks: {
+            font: {
+              size: 11
+            },
+            color: 'rgba(75, 85, 99, 0.6)'
+          }
+        },
+        y: {
+          display: true,
+          min: 0,
+          max: 100,
+          grid: {
+            display: true,
+            color: 'rgba(229, 231, 235, 0.5)'
+          },
+          ticks: {
+            font: {
+              size: 10
+            },
+            color: 'rgba(75, 85, 99, 0.6)',
+            callback: function(value) {
+              return value + '점';
+            }
+          }
+        }
+      },
+      animation: {
+        duration: 1500,
+        easing: 'easeOutQuart'
+      }
+    }
+  });
+}
+
+// 팀 내 위치 세로 막대 그래프 (등수가 높을수록 막대가 높게) - 사용 안 함
 function renderRankChart(canvasId, rank, total) {
   const ctx = document.getElementById(canvasId);
   if (!ctx) return;
@@ -348,18 +464,18 @@ function renderTrendChart(canvasId, trendValue) {
 // 모든 차트 렌더링
 function renderAllCharts() {
   // 학부모 모드 차트 (항상 렌더링)
-  renderRankChart('parent-rank-chart', 2, 5); // 전체 5명 중 2위
+  // 학습 완성도 차트 (본인 점수 vs 평균 점수)
+  renderCompletionChart('parent-completion-chart', [75, 80, 85, 82, 88], [70, 72, 75, 73, 78]);
   renderAssignmentChart('parent-assignment-chart', 90); // 과제 90%
   renderTestChart('parent-test-chart', 85, 80); // 내 점수 85점, 평균 80점
-  renderTrendChart('parent-trend-chart', 5); // 지난달 대비 +5점
 }
 
 // 학생 모드 차트 렌더링
 function renderStudentCharts() {
-  renderRankChart('student-rank-chart', 2, 5); // 전체 5명 중 2위
+  // 학습 완성도 차트 (본인 점수 vs 평균 점수)
+  renderCompletionChart('student-completion-chart', [75, 80, 85, 82, 88], [70, 72, 75, 73, 78]);
   renderAssignmentChart('student-assignment-chart', 90); // 과제 90%
   renderTestChart('student-test-chart', 85, 80); // 내 점수 85점, 평균 80점
-  renderTrendChart('student-trend-chart', 5); // 지난달 대비 +5점
 }
 
 // ============================================
@@ -412,10 +528,10 @@ document.addEventListener('DOMContentLoaded', function() {
           app.className = 'app app--mode-parent';
           // 학부모 모드 차트 렌더링
           setTimeout(() => {
-            renderRankChart('parent-rank-chart', 2, 5);
+            renderCompletionChart('parent-completion-chart', [75, 80, 85, 82, 88], [70, 72, 75, 73, 78]);
             renderAssignmentChart('parent-assignment-chart', 90);
             renderTestChart('parent-test-chart', 85, 80);
-            renderTrendChart('parent-trend-chart', 5);
+            renderCompletionChart('parent-completion-chart', [75, 80, 85, 82, 88], [70, 72, 75, 73, 78]);
           }, 100);
         } else if (mode === 'tutor') {
           tutorDashboard.removeAttribute('hidden');
@@ -1259,9 +1375,9 @@ document.addEventListener('DOMContentLoaded', function() {
             top: targetPosition,
             behavior: 'smooth'
           });
-        }
-      });
+      }
     });
+  });
 
     // Intersection Observer로 현재 보이는 섹션 감지
     const observerOptions = {
@@ -1483,18 +1599,177 @@ document.addEventListener('DOMContentLoaded', function() {
 
           // 리포트 전송 확인
           modal.querySelector('[data-action="confirm-send-report"]').addEventListener('click', function() {
-            if (confirm('리포트를 전송하시겠습니까?')) {
-              alert('리포트가 성공적으로 전송되었습니다.\n학부모 앱에 리포트가 업데이트되었습니다.');
+          if (confirm('리포트를 전송하시겠습니까?')) {
+            alert('리포트가 성공적으로 전송되었습니다.\n학부모 앱에 리포트가 업데이트되었습니다.');
               closeModal();
-              // 첫 번째 스텝으로 리셋
+            // 첫 번째 스텝으로 리셋
               const firstStepBtn = document.querySelector('.class-mode__step[data-step="1"]');
               if (firstStepBtn) {
                 firstStepBtn.click();
               }
-            }
+          }
           });
         });
       }
+
+  // ============================================
+  // 6-1. 매칭 보드 탭 전환 (학부모/튜터)
+  // ============================================
+  const matchingBoardTabs = document.querySelectorAll('.matching-board__tab');
+  matchingBoardTabs.forEach(tab => {
+    tab.addEventListener('click', function() {
+      const targetTab = this.getAttribute('data-tab');
+      const board = this.closest('.matching-board');
+      
+      if (!board) return;
+      
+      // 모든 탭 비활성화
+      board.querySelectorAll('.matching-board__tab').forEach(t => {
+        t.classList.remove('matching-board__tab--active');
+      });
+      
+      // 모든 콘텐츠 숨기기
+      board.querySelectorAll('.matching-board__content').forEach(c => {
+        c.classList.remove('matching-board__content--active');
+      });
+      
+      // 현재 탭 활성화
+      this.classList.add('matching-board__tab--active');
+      
+      // 해당 콘텐츠 표시
+      const targetContent = document.getElementById(targetTab);
+      if (targetContent) {
+        targetContent.classList.add('matching-board__content--active');
+      }
+    });
+  });
+
+  // 새 그룹 만들기 버튼
+  const createNewGroupBtn = document.querySelector('[data-action="create-new-group"]');
+  if (createNewGroupBtn) {
+    createNewGroupBtn.addEventListener('click', function() {
+      alert('새 그룹 만들기 기능은 준비 중입니다.');
+    });
+  }
+
+  // 튜터 참가하기 버튼
+  const tutorJoinClassBtns = document.querySelectorAll('[data-action="tutor-join-class"]');
+  tutorJoinClassBtns.forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      const card = this.closest('.matching-card');
+      const title = card ? card.querySelector('.matching-card__title').textContent : '수업';
+      if (confirm(`${title}에 참가하시겠습니까?`)) {
+        alert('참가 신청이 완료되었습니다.');
+      }
+    });
+  });
+
+  // 모집글 작성 폼 제출 (학부모)
+  const parentRecruitForm = document.querySelector('[data-action="create-recruit-post"]');
+  if (parentRecruitForm) {
+    parentRecruitForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      
+      if (confirm('모집글을 등록하시겠습니까?')) {
+        alert('모집글이 등록되었습니다.\n학생들이 신청할 수 있도록 게시판에 노출됩니다.');
+        this.reset();
+      }
+    });
+  }
+
+  // 모집글 작성 폼 제출 (튜터)
+  const tutorRecruitForm = document.querySelector('[data-action="create-tutor-recruit-post"]');
+  if (tutorRecruitForm) {
+    tutorRecruitForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      
+      if (confirm('모집글을 등록하시겠습니까?')) {
+        alert('모집글이 등록되었습니다.\n학생들이 신청할 수 있도록 게시판에 노출됩니다.');
+        this.reset();
+      }
+    });
+  }
+
+  // 모집글 작성 취소
+  const cancelRecruitBtns = document.querySelectorAll('[data-action="cancel-recruit"]');
+  cancelRecruitBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const form = this.closest('form');
+      if (form && confirm('작성 중인 내용이 사라집니다. 취소하시겠습니까?')) {
+        form.reset();
+      }
+    });
+  });
+
+  // 신규 학생 승인
+  const approveStudentBtns = document.querySelectorAll('[data-action="approve-student"]');
+  approveStudentBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const studentName = this.getAttribute('data-student');
+      if (confirm(`${studentName} 학생을 승인하시겠습니까?`)) {
+        alert(`${studentName} 학생이 승인되었습니다.\n수업에 참여할 수 있습니다.`);
+        this.closest('.pending-student-item').remove();
+      }
+    });
+  });
+
+  // 신규 학생 거절
+  const rejectStudentBtns = document.querySelectorAll('[data-action="reject-student"]');
+  rejectStudentBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const studentName = this.getAttribute('data-student');
+      if (confirm(`${studentName} 학생의 신청을 거절하시겠습니까?`)) {
+        alert(`${studentName} 학생의 신청이 거절되었습니다.\n학생에게 알림이 전송됩니다.`);
+        this.closest('.pending-student-item').remove();
+      }
+    });
+  });
+
+  // 모집 마감
+  const closeRecruitmentBtn = document.querySelector('[data-action="close-recruitment"]');
+  if (closeRecruitmentBtn) {
+    closeRecruitmentBtn.addEventListener('click', function() {
+      if (confirm('모집을 마감하시겠습니까?\n더 이상 신규 학생을 받을 수 없습니다.')) {
+        alert('모집이 마감되었습니다.');
+        this.setAttribute('hidden', '');
+        const reopenBtn = document.querySelector('[data-action="reopen-recruitment"]');
+        if (reopenBtn) {
+          reopenBtn.removeAttribute('hidden');
+        }
+      }
+    });
+  }
+
+  // 모집 재개
+  const reopenRecruitmentBtn = document.querySelector('[data-action="reopen-recruitment"]');
+  if (reopenRecruitmentBtn) {
+    reopenRecruitmentBtn.addEventListener('click', function() {
+      if (confirm('모집을 재개하시겠습니까?')) {
+        alert('모집이 재개되었습니다.');
+        this.setAttribute('hidden', '');
+        const closeBtn = document.querySelector('[data-action="close-recruitment"]');
+        if (closeBtn) {
+          closeBtn.removeAttribute('hidden');
+        }
+      }
+    });
+  }
+
+  // 학생 제외 요청
+  const requestRemoveStudentBtns = document.querySelectorAll('[data-action="request-remove-student"]');
+  requestRemoveStudentBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const studentName = this.getAttribute('data-student');
+      if (confirm(`${studentName} 학생을 수업에서 제외하시겠습니까?\n관리자에게 요청이 전송됩니다.`)) {
+        alert(`${studentName} 학생의 제외 요청이 관리자에게 전송되었습니다.\n관리자 검토 후 처리됩니다.`);
+      }
+    });
+  });
 
   // ============================================
   // 7. 탭 전환 (관리자 모드)
