@@ -14,7 +14,7 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
-<body class="app app--mode-student">
+<body class="app">
   <div class="app-shell">
 
     <!-- =========================================
@@ -65,9 +65,9 @@
            1) 학부모 모드 대시보드
            (기본은 숨김, parent 모드에서 표시)
       ================================ -->
-      <section class="dashboard dashboard--parent" data-role="parent" hidden>
+      <section class="dashboard dashboard--parent" data-view="parent" hidden>
         <!-- 상단 탭 네비게이션: 홈 / 결제·팀 관리 / 매칭 / 알림센터 -->
-        <nav class="tab-nav" data-component="parent-tabs">
+        <nav class="tab-nav" data-tabs="parent-main">
           <button class="tab-nav__btn tab-nav__btn--active" data-tab="parent-home">
             홈
           </button>
@@ -362,17 +362,17 @@
           <section class="card card--report-tabs">
             <div class="card__body">
               <!-- 리포트 서브 탭 네비게이션 -->
-              <div class="report-tabs">
-                <button class="report-tabs__btn report-tabs__btn--active" data-report-tab="parent-weekly">
+              <div class="report-tabs" data-tabs="parent-report">
+                <button class="report-tabs__btn report-tabs__btn--active" data-tab="parent-weekly">
                   주차별 리포트
                 </button>
-                <button class="report-tabs__btn" data-report-tab="parent-monthly">
+                <button class="report-tabs__btn" data-tab="parent-monthly">
                   월별 리포트
                 </button>
               </div>
 
               <!-- 주차별 리포트 (메인) -->
-              <div id="parent-weekly" class="report-tabs__content report-tabs__content--active">
+              <div id="parent-weekly" class="report-tabs__content report-tabs__content--active" data-tab-panel="parent-weekly">
                 <section class="card card--weekly-report">
                   <header class="card__header">
                     <h2 class="card__title">주차별 학습 리포트</h2>
@@ -430,7 +430,7 @@
               </div>
 
               <!-- 월별 리포트 (총평, 진도 브리핑 등) -->
-              <div id="parent-monthly" class="report-tabs__content">
+              <div id="parent-monthly" class="report-tabs__content" data-tab-panel="parent-monthly" hidden>
                 <!-- 1. 월간 리포트 요약 카드 (시각화) -->
                 <section class="card card--report-summary" data-block="parent-report-summary">
                   <header class="card__header">
@@ -519,6 +519,29 @@
               </div>
             </div>
           </section>
+
+          <!-- 민원 / 피드백 (학부모) -->
+          <section class="card card--feedback" data-block="parent-feedback">
+            <header class="card__header">
+              <h2 class="card__title">민원 / 피드백 접수</h2>
+            </header>
+            <div class="card__body feedback">
+              <div class="feedback__row">
+                <label class="feedback__label">대상 선택</label>
+                <select class="feedback__select" name="feedback-target-parent">
+                  <option value="tutor">튜터에게</option>
+                  <option value="admin">관리자에게</option>
+                </select>
+              </div>
+              <div class="feedback__row">
+                <label class="feedback__label">내용</label>
+                <textarea class="feedback__textarea" name="feedback-message-parent" rows="4" placeholder="불편 사항이나 개선 의견을 적어주세요. (관리자/튜터에게 전달됩니다)"></textarea>
+              </div>
+              <div class="feedback__actions">
+                <button class="btn btn--primary" type="button" data-action="submit-complaint" data-from="parent">제출하기</button>
+              </div>
+            </div>
+          </section>
         </section>
 
         <!-- ========== [학부모] 매칭 탭 ========== -->
@@ -531,7 +554,7 @@
 
             <div class="card__body matching-board">
               <!-- 탭 네비게이션 -->
-              <div class="matching-board__tabs">
+              <div class="matching-board__tabs" data-tabs="parent-matching">
                 <button class="matching-board__tab matching-board__tab--active" data-tab="parent-matching-progress">
                   매칭 진행 중
                 </button>
@@ -688,7 +711,7 @@
               </div>
 
               <!-- 수업 관리 탭 -->
-              <div id="parent-matching-ongoing" class="matching-board__content">
+              <div id="parent-matching-ongoing" class="matching-board__content" hidden>
                 <div class="matching-cards">
                   <article class="matching-card matching-card--completed">
                     <div class="matching-card__status">
@@ -767,7 +790,7 @@
               </div>
 
               <!-- 모집게시판 탭 -->
-              <div id="parent-matching-board" class="matching-board__content">
+              <div id="parent-matching-board" class="matching-board__content" hidden>
                 <section class="card card--recruit-board">
                   <header class="card__header">
                     <h2 class="card__title">모집게시판</h2>
@@ -877,7 +900,7 @@
               </div>
 
               <!-- 나의 모집글 탭 -->
-              <div id="parent-matching-my" class="matching-board__content">
+              <div id="parent-matching-my" class="matching-board__content" hidden>
                 <section class="card card--my-recruits">
                   <header class="card__header">
                     <h2 class="card__title">나의 모집글</h2>
@@ -953,11 +976,12 @@
               </div>
 
               <!-- 모집글 작성 탭 -->
-              <div id="parent-matching-create" class="matching-board__content">
+              <div id="parent-matching-create" class="matching-board__content" hidden>
                 <section class="card card--recruit-form">
                   <header class="card__header">
                     <h2 class="card__title">새 팀 모집글 작성</h2>
                     <p class="card__meta">자녀에게 맞는 팀을 모집하거나 새로운 팀을 만들 수 있습니다.</p>
+                    <button class="btn btn--secondary" type="button" data-action="open-recruit-modal" data-role="parent">팝업으로 작성</button>
                   </header>
 
                   <div class="card__body recruit-form">
@@ -1073,12 +1097,12 @@
             </header>
 
             <div class="card__body profile">
-              <!-- 수강 상태 관리 -->
+              <!-- 설정 -->
               <div class="profile__section">
-                <h3 class="profile__section-title">수강 상태 관리</h3>
+                <h3 class="profile__section-title">설정</h3>
                 <div class="profile__menu-list">
-                  <button class="profile__menu-item" type="button" data-action="open-withdrawal-flow">
-                    <span class="profile__menu-label">팀 탈퇴 / 수강 종료</span>
+                  <button class="profile__menu-item" type="button" data-action="open-settings">
+                    <span class="profile__menu-label">수강 상태 변경</span>
                     <span class="profile__menu-arrow">→</span>
                   </button>
                 </div>
@@ -1093,9 +1117,9 @@
            2) 학생 모드 대시보드
            (기본 활성 모드)
       ================================ -->
-      <section class="dashboard dashboard--student" data-role="student">
+      <section class="dashboard dashboard--student" data-view="student">
         <!-- 학생 모드 상단 탭: My 학습 홈 / 리포트 / 매칭 / 마이페이지 -->
-        <nav class="tab-nav" data-component="student-tabs">
+        <nav class="tab-nav" data-tabs="student-main">
           <button class="tab-nav__btn tab-nav__btn--active" data-tab="student-home">
             My 학습 홈
           </button>
@@ -1218,17 +1242,17 @@
           <section class="card card--report-tabs">
             <div class="card__body">
               <!-- 리포트 서브 탭 네비게이션 -->
-              <div class="report-tabs">
-                <button class="report-tabs__btn report-tabs__btn--active" data-report-tab="student-weekly">
+              <div class="report-tabs" data-tabs="student-report">
+                <button class="report-tabs__btn report-tabs__btn--active" data-tab="student-weekly">
                   주차별 리포트
                 </button>
-                <button class="report-tabs__btn" data-report-tab="student-monthly">
+                <button class="report-tabs__btn" data-tab="student-monthly">
                   월별 리포트
                 </button>
               </div>
 
               <!-- 주차별 리포트 (메인) -->
-              <div id="student-weekly" class="report-tabs__content report-tabs__content--active">
+              <div id="student-weekly" class="report-tabs__content report-tabs__content--active" data-tab-panel="student-weekly">
                 <section class="card card--weekly-report">
                   <header class="card__header">
                     <h2 class="card__title">주차별 학습 리포트</h2>
@@ -1286,7 +1310,7 @@
               </div>
 
               <!-- 월별 리포트 (총평, 진도 브리핑 등) -->
-              <div id="student-monthly" class="report-tabs__content">
+              <div id="student-monthly" class="report-tabs__content" data-tab-panel="student-monthly" hidden>
                 <!-- 1. 월간 리포트 요약 카드 (시각화) -->
                 <section class="card card--report-summary" data-block="student-report-summary">
                   <header class="card__header">
@@ -1375,6 +1399,29 @@
               </div>
             </div>
           </section>
+
+          <!-- 민원 / 피드백 (학생) -->
+          <section class="card card--feedback" data-block="student-feedback">
+            <header class="card__header">
+              <h2 class="card__title">민원 / 피드백 접수</h2>
+            </header>
+            <div class="card__body feedback">
+              <div class="feedback__row">
+                <label class="feedback__label">대상 선택</label>
+                <select class="feedback__select" name="feedback-target-student">
+                  <option value="tutor">튜터에게</option>
+                  <option value="admin">관리자에게</option>
+                </select>
+              </div>
+              <div class="feedback__row">
+                <label class="feedback__label">내용</label>
+                <textarea class="feedback__textarea" name="feedback-message-student" rows="4" placeholder="불편 사항이나 개선 의견을 적어주세요. (관리자/튜터에게 전달됩니다)"></textarea>
+              </div>
+              <div class="feedback__actions">
+                <button class="btn btn--primary" type="button" data-action="submit-complaint" data-from="student">제출하기</button>
+              </div>
+            </div>
+          </section>
         </section>
 
         <!-- ========== [학생] 매칭 탭 ========== -->
@@ -1416,11 +1463,11 @@
                   <option value="2">2등급</option>
                   <option value="3">3등급</option>
                 </select>
-                <select class="student-matching__filter" name="gender" data-filter="gender">
-                  <option value="">성별 선택</option>
-                  <option value="male">남학생</option>
-                  <option value="female">여학생</option>
-                  <option value="mixed">혼성</option>
+                <select class="student-matching__filter" name="school" data-filter="school">
+                  <option value="">학교 선택</option>
+                  <option value="sm">숙명여고</option>
+                  <option value="hm">휘문고</option>
+                  <option value="etc">기타</option>
                 </select>
                 <select class="student-matching__filter" name="time" data-filter="time">
                   <option value="">수업 시간</option>
@@ -1428,11 +1475,11 @@
                   <option value="sun-14">일요일 14시</option>
                   <option value="weekday">평일 저녁</option>
                 </select>
-                <select class="student-matching__filter" name="school" data-filter="school">
-                  <option value="">학교 선택</option>
-                  <option value="sm">숙명여고</option>
-                  <option value="hm">휘문고</option>
-                  <option value="etc">기타</option>
+                <select class="student-matching__filter" name="gender" data-filter="gender">
+                  <option value="">성별 선택</option>
+                  <option value="male">남학생</option>
+                  <option value="female">여학생</option>
+                  <option value="mixed">혼성</option>
                 </select>
               </div>
 
@@ -1461,6 +1508,8 @@
                     <button class="btn btn--ghost" type="button" data-action="view-team-detail">
                       상세 보기
                     </button>
+                      <button class="btn btn--secondary" type="button" data-action="pause-recruit">모집 중지</button>
+                      <button class="btn btn--danger" type="button" data-action="delete-recruit">삭제</button>
                   </div>
                 </article>
 
@@ -1600,12 +1649,12 @@
             </header>
 
             <div class="card__body profile">
-              <!-- 수강 상태 관리 -->
+              <!-- 설정 -->
               <div class="profile__section">
-                <h3 class="profile__section-title">수강 상태 관리</h3>
+                <h3 class="profile__section-title">설정</h3>
                 <div class="profile__menu-list">
-                  <button class="profile__menu-item" type="button" data-action="open-withdrawal-flow">
-                    <span class="profile__menu-label">팀 탈퇴 / 수강 종료</span>
+                  <button class="profile__menu-item" type="button" data-action="open-settings">
+                    <span class="profile__menu-label">수강 상태 변경</span>
                     <span class="profile__menu-arrow">→</span>
                   </button>
                 </div>
@@ -1620,9 +1669,9 @@
            3) 튜터 모드 대시보드
            (기본은 숨김, tutor 모드에서 표시)
       ================================ -->
-      <section class="dashboard dashboard--tutor" data-role="tutor" hidden>
+      <section class="dashboard dashboard--tutor" data-view="tutor" hidden>
         <!-- 튜터 모드 상단 탭: 홈 / 클래스 관리 / 스케줄·자료 / 매칭 / 마이페이지 -->
-        <nav class="tab-nav" data-component="tutor-tabs">
+        <nav class="tab-nav" data-tabs="tutor-main">
           <button class="tab-nav__btn tab-nav__btn--active" data-tab="tutor-home">
             홈
           </button>
@@ -1644,6 +1693,30 @@
         <section id="tutor-home" class="tab-panel tab-panel--active" data-tab-panel="tutor-home">
           
           <div class="grid grid--two-columns">
+            <!-- 내 클래스 현황 -->
+            <section class="card card--tutor-classes" data-block="tutor-class-list">
+              <header class="card__header">
+                <h2 class="card__title">내 클래스 현황</h2>
+              </header>
+              <div class="card__body tutor-class-list">
+                <article class="tutor-class-item">
+                  <div class="tutor-class-item__title">수학2 심화반</div>
+                  <div class="tutor-class-item__meta">과목: 수학 · 인원 4/6 · 다음 결제: 12/20 · 급여: ₩1,200,000</div>
+                  <div class="tutor-class-item__progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 70%;"></div></div>
+                    <span class="progress-text">진도 70%</span>
+                  </div>
+                </article>
+                <article class="tutor-class-item">
+                  <div class="tutor-class-item__title">영어 독해반</div>
+                  <div class="tutor-class-item__meta">과목: 영어 · 인원 3/5 · 다음 결제: 12/25 · 급여: ₩900,000</div>
+                  <div class="tutor-class-item__progress">
+                    <div class="progress-bar"><div class="progress-fill" style="width: 55%;"></div></div>
+                    <span class="progress-text">진도 55%</span>
+                  </div>
+                </article>
+              </div>
+            </section>
             <!-- 수업 제한 정보 카드 -->
             <section class="card card--tutor-limits" data-block="tutor-limits">
               <header class="card__header">
@@ -1758,8 +1831,17 @@
           <!-- 클래스 관리 상단: 신규 학생 승인, 모집 마감, 학생 관리 -->
           <section class="card card--class-management" data-block="tutor-class-management">
             <header class="card__header">
-              <h2 class="card__title">클래스 관리</h2>
-              <p class="card__meta">신규 학생 승인, 모집 마감, 학생 관리를 할 수 있습니다.</p>
+              <div>
+                <h2 class="card__title">클래스 관리</h2>
+                <p class="card__meta">클래스를 선택한 후 수업 자료, 리포트 작성을 진행하세요.</p>
+              </div>
+              <div class="class-management__selector">
+                <label class="sr-only">클래스 선택</label>
+                <select class="recruit-form__select">
+                  <option>수학2 심화반</option>
+                  <option>영어 독해반</option>
+                </select>
+              </div>
             </header>
 
             <div class="card__body class-management">
@@ -2113,12 +2195,15 @@
 
             <div class="card__body matching-board">
               <!-- 탭 네비게이션 -->
-              <div class="matching-board__tabs">
+              <div class="matching-board__tabs" data-tabs="tutor-matching">
                 <button class="matching-board__tab matching-board__tab--active" data-tab="tutor-matching-progress">
                   매칭 진행 중
                 </button>
                 <button class="matching-board__tab" data-tab="tutor-matching-ongoing">
                   수업 진행 중
+                </button>
+                <button class="matching-board__tab" data-tab="tutor-find">
+                  과외 구하기
                 </button>
                 <button class="matching-board__tab" data-tab="tutor-matching-board">
                   모집게시판
@@ -2250,7 +2335,7 @@
               </div>
 
               <!-- 수업 진행 중 탭 -->
-              <div id="tutor-matching-ongoing" class="matching-board__content">
+              <div id="tutor-matching-ongoing" class="matching-board__content" hidden>
                 <div class="matching-cards">
                   <article class="matching-card matching-card--completed">
                     <div class="matching-card__status">
@@ -2328,8 +2413,28 @@
                 </div>
               </div>
 
+              <!-- 과외 구하기 탭 (튜터가 신청) -->
+              <div id="tutor-find" class="matching-board__content" data-tab-panel="tutor-find" hidden>
+                <div class="matching-cards">
+                  <article class="matching-card matching-card--available">
+                    <div class="matching-card__status">
+                      <div class="status-indicator status-indicator--active"></div>
+                      <span class="status-text status-text--active">모집 중</span>
+                    </div>
+                    <div class="matching-card__info">
+                      <h3 class="matching-card__title">고2 수학 확통</h3>
+                      <p class="matching-card__details">주 2회 · 90분 · 최소 3명 / 최대 6명</p>
+                    </div>
+                    <div class="matching-card__actions">
+                      <button class="btn btn--primary" type="button" data-action="tutor-join-recruit">나 이거 할래요</button>
+                      <button class="btn btn--ghost" type="button" data-action="view-recruit-detail">상세 보기</button>
+                    </div>
+                  </article>
+                </div>
+              </div>
+
               <!-- 모집게시판 탭 -->
-              <div id="tutor-matching-board" class="matching-board__content">
+              <div id="tutor-matching-board" class="matching-board__content" hidden>
                 <section class="card card--recruit-board">
                   <header class="card__header">
                     <h2 class="card__title">모집게시판</h2>
@@ -2390,6 +2495,8 @@
                           <button class="btn btn--ghost" type="button" data-action="view-recruit-detail">
                             상세 보기
                           </button>
+                        <button class="btn btn--secondary" type="button" data-action="pause-recruit">모집 중지</button>
+                        <button class="btn btn--danger" type="button" data-action="delete-recruit">삭제</button>
                         </div>
                       </article>
 
@@ -2448,7 +2555,7 @@
               </div>
 
               <!-- 나의 모집글 탭 -->
-              <div id="tutor-matching-my" class="matching-board__content">
+              <div id="tutor-matching-my" class="matching-board__content" hidden>
                 <section class="card card--my-recruits">
                   <header class="card__header">
                     <h2 class="card__title">나의 모집글</h2>
@@ -2493,11 +2600,12 @@
               </div>
 
               <!-- 모집글 작성 탭 -->
-              <div id="tutor-matching-create" class="matching-board__content">
+              <div id="tutor-matching-create" class="matching-board__content" hidden>
                 <section class="card card--recruit-form">
                   <header class="card__header">
                     <h2 class="card__title">새 수업 모집글 작성</h2>
                     <p class="card__meta">새로운 수업을 모집하고 학생들을 매칭할 수 있습니다.</p>
+                    <button class="btn btn--secondary" type="button" data-action="open-recruit-modal" data-role="tutor">팝업으로 작성</button>
                   </header>
 
                   <div class="card__body recruit-form">
@@ -2634,12 +2742,12 @@
             </header>
 
             <div class="card__body profile">
-              <!-- 수강 상태 관리 -->
+              <!-- 설정 -->
               <div class="profile__section">
-                <h3 class="profile__section-title">수강 상태 관리</h3>
+                <h3 class="profile__section-title">설정</h3>
                 <div class="profile__menu-list">
-                  <button class="profile__menu-item" type="button" data-action="open-withdrawal-flow">
-                    <span class="profile__menu-label">팀 탈퇴 / 수강 종료</span>
+                  <button class="profile__menu-item" type="button" data-action="open-settings">
+                    <span class="profile__menu-label">수강 상태 변경</span>
                     <span class="profile__menu-arrow">→</span>
                   </button>
                 </div>
@@ -2654,9 +2762,9 @@
            4) 관리자 모드 대시보드
            (기본은 숨김, admin 모드에서 표시)
       ================================ -->
-      <section class="dashboard dashboard--admin" data-role="admin" hidden>
+      <section class="dashboard dashboard--admin" data-view="admin" hidden>
         <!-- 관리자 모드 상단 탭: 튜터·수업 관리 / 오퍼레이션 정산 / 매칭 관리 / 알림센터 -->
-        <nav class="tab-nav" data-component="admin-tabs">
+        <nav class="tab-nav" data-tabs="admin-main">
           <button class="tab-nav__btn tab-nav__btn--active" data-tab="admin-tutors">
             튜터 · 수업 관리
           </button>
@@ -2960,6 +3068,38 @@
               </div>
             </div>
           </section>
+
+          <!-- 민원/피드백 응답 (관리자) -->
+          <section class="card card--feedback-admin" data-block="admin-complaints">
+            <header class="card__header">
+              <h2 class="card__title">민원 / 피드백 응답</h2>
+              <p class="card__meta">학생·학부모·튜터가 접수한 민원에 답변합니다.</p>
+            </header>
+            <div class="card__body admin-complaints">
+              <ul class="admin-complaints__list">
+                <li class="admin-complaint-item">
+                  <div class="admin-complaint-item__info">
+                    <span class="admin-complaint-item__from">학생 · tutor</span>
+                    <span class="admin-complaint-item__time">2시간 전</span>
+                  </div>
+                  <p class="admin-complaint-item__text">최근 과제 피드백이 늦게 올라옵니다. 확인 부탁드립니다.</p>
+                  <div class="admin-complaint-item__actions">
+                    <button class="btn btn--secondary" type="button" data-action="reply-complaint">답변하기</button>
+                  </div>
+                </li>
+                <li class="admin-complaint-item">
+                  <div class="admin-complaint-item__info">
+                    <span class="admin-complaint-item__from">학부모 · tutor</span>
+                    <span class="admin-complaint-item__time">1일 전</span>
+                  </div>
+                  <p class="admin-complaint-item__text">수업 시간 변경 요청에 대한 답변을 기다리고 있습니다.</p>
+                  <div class="admin-complaint-item__actions">
+                    <button class="btn btn--secondary" type="button" data-action="reply-complaint">답변하기</button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
         </section>
 
         <!-- ========== [관리자] 오퍼레이션 정산 탭 ========== -->
@@ -3185,216 +3325,11 @@
 
   </div>
 
-  <!-- =========================================
-       팀 탈퇴 / 수강 종료 플로우 모달
-  ========================================== -->
-  <div id="withdrawal-flow-modal" class="modal withdrawal-flow-modal" hidden>
-    <div class="modal__content modal__content--large">
-      <div class="withdrawal-flow" data-withdrawal-step="1">
-        <!-- 1단계: 정보 안내 페이지 -->
-        <div class="withdrawal-step withdrawal-step--active" data-step="1">
-          <div class="modal__header">
-            <h3 class="modal__header-title">탈퇴 전에 꼭 알고 있어야 할 정보</h3>
-            <button class="modal__close" type="button" data-action="close-withdrawal-modal">×</button>
-          </div>
-
-          <div class="modal__body">
-            <!-- 섹션 1: 데이터/자료 관련 안내 -->
-            <div class="withdrawal-info-section">
-              <h4 class="withdrawal-info-section__title">
-                <span class="withdrawal-info-section__icon">📚</span>
-                자료 및 콘텐츠 접근 권한
-              </h4>
-              <ul class="withdrawal-info-list">
-                <li class="withdrawal-info-item">
-                  탈퇴 시, DRM으로 제공되던 자료(기출/기출변형/학교별 자료 등)와 오답노트/VOD 접근 권한이 중단됩니다.
-                </li>
-                <li class="withdrawal-info-item">
-                  이미 발급된 리포트는 보관되지만, 이후 업데이트는 제공되지 않습니다.
-                </li>
-              </ul>
-            </div>
-
-            <!-- 섹션 2: 팀/요금 관련 안내 -->
-            <div class="withdrawal-info-section">
-              <h4 class="withdrawal-info-section__title">
-                <span class="withdrawal-info-section__icon">💰</span>
-                팀 구성 및 요금 조정
-              </h4>
-              <ul class="withdrawal-info-list">
-                <li class="withdrawal-info-item">
-                  팀 구성 인원 조정으로 인해 남은 팀원들의 수강료가 변경될 수 있습니다.
-                </li>
-                <li class="withdrawal-info-item">
-                  이는 투명한 요금 구조 유지를 위한 조정이며, 자세한 내용은 팀 안내에서 확인하실 수 있습니다.
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="modal__footer">
-            <button class="btn btn--primary" type="button" data-action="continue-using">
-              계속 이용하기
-            </button>
-            <button class="btn btn--secondary" type="button" data-action="next-withdrawal-step">
-              탈퇴 절차 진행
-            </button>
-          </div>
-        </div>
-
-        <!-- 2단계: 탈퇴 사유 설문 -->
-        <div class="withdrawal-step" data-step="2" hidden>
-          <div class="modal__header">
-            <h3 class="modal__header-title">탈퇴 사유를 알려주세요</h3>
-            <button class="modal__close" type="button" data-action="close-withdrawal-modal">×</button>
-          </div>
-
-          <div class="modal__body">
-            <div class="withdrawal-survey">
-              <p class="withdrawal-survey__desc">더 나은 서비스를 위해 탈퇴 사유를 선택해주세요. (복수 선택 가능)</p>
-              
-              <div class="withdrawal-survey__options">
-                <label class="withdrawal-survey__option">
-                  <input type="checkbox" name="withdrawal-reason" value="curriculum">
-                  <span>수업/커리큘럼이 맞지 않음</span>
-                </label>
-                <label class="withdrawal-survey__option">
-                  <input type="checkbox" name="withdrawal-reason" value="tutor">
-                  <span>튜터와의 궁합/스타일 문제</span>
-                </label>
-                <label class="withdrawal-survey__option">
-                  <input type="checkbox" name="withdrawal-reason" value="schedule">
-                  <span>시간/스케줄 문제</span>
-                </label>
-                <label class="withdrawal-survey__option">
-                  <input type="checkbox" name="withdrawal-reason" value="cost">
-                  <span>비용 부담</span>
-                </label>
-                <label class="withdrawal-survey__option">
-                  <input type="checkbox" name="withdrawal-reason" value="other">
-                  <span>기타</span>
-                </label>
-              </div>
-
-              <div class="withdrawal-survey__textarea">
-                <label class="withdrawal-survey__label">
-                  <span>불편하셨던 점이 있다면 자유롭게 적어주세요. 서비스 개선에 큰 도움이 됩니다.</span>
-                  <textarea 
-                    class="withdrawal-survey__input" 
-                    name="withdrawal-feedback" 
-                    rows="4" 
-                    placeholder="가능하다면, 더 나은 서비스를 위해 구체적인 사유를 적어주세요."
-                  ></textarea>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal__footer">
-            <button class="btn btn--ghost" type="button" data-action="prev-withdrawal-step">
-              이전
-            </button>
-            <button class="btn btn--secondary" type="button" data-action="next-withdrawal-step">
-              다음
-            </button>
-          </div>
-        </div>
-
-        <!-- 3단계: 직거래 방지 및 약관 안내 -->
-        <div class="withdrawal-step" data-step="3" hidden>
-          <div class="modal__header">
-            <h3 class="modal__header-title">안전한 수업 환경을 위한 안내</h3>
-            <button class="modal__close" type="button" data-action="close-withdrawal-modal">×</button>
-          </div>
-
-          <div class="modal__body">
-            <div class="withdrawal-notice">
-              <div class="withdrawal-notice__content">
-                <p class="withdrawal-notice__text">
-                  튜터와의 사적인 직거래(플랫폼을 통하지 않는 개인 계약)는
-                  서비스 약관상 허용되지 않으며, 분쟁 발생 시 플랫폼의 보호를 받기 어렵습니다.
-                </p>
-                <p class="withdrawal-notice__text">
-                  안전한 수업 환경을 위해 모든 결제·정산은 플랫폼을 통해 진행해 주세요.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div class="modal__footer">
-            <button class="btn btn--ghost" type="button" data-action="prev-withdrawal-step">
-              이전
-            </button>
-            <button class="btn btn--secondary" type="button" data-action="next-withdrawal-step">
-              다음
-            </button>
-          </div>
-        </div>
-
-        <!-- 4단계: 쿨다운/대안 제안 + 즉시 탈퇴 버튼 -->
-        <div class="withdrawal-step" data-step="4" hidden>
-          <div class="modal__header">
-            <h3 class="modal__header-title">탈퇴 전 대안 제안</h3>
-            <button class="modal__close" type="button" data-action="close-withdrawal-modal">×</button>
-          </div>
-
-          <div class="modal__body">
-            <!-- 대안 제안 -->
-            <div class="withdrawal-benefits">
-              <h4 class="withdrawal-benefits__title">다른 옵션을 고려해보세요</h4>
-              <div class="withdrawal-benefits__list">
-                <div class="withdrawal-benefit-item">
-                  <span class="withdrawal-benefit-item__icon">🔄</span>
-                  <div class="withdrawal-benefit-item__content">
-                    <h5 class="withdrawal-benefit-item__title">다른 튜터/팀으로 변경 상담 받기</h5>
-                    <p class="withdrawal-benefit-item__desc">더 적합한 튜터나 팀을 찾을 수 있도록 도와드립니다.</p>
-                  </div>
-                  <button class="btn btn--secondary" type="button" data-action="request-consultation">
-                    상담 신청
-                  </button>
-                </div>
-                <div class="withdrawal-benefit-item">
-                  <span class="withdrawal-benefit-item__icon">🎁</span>
-                  <div class="withdrawal-benefit-item__content">
-                    <h5 class="withdrawal-benefit-item__title">이번 달까지만 유지하고 혜택 받기</h5>
-                    <p class="withdrawal-benefit-item__desc">교재 할인 등 특별 혜택을 제공합니다.</p>
-                  </div>
-                  <button class="btn btn--secondary" type="button" data-action="request-benefit">
-                    혜택 받기
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- 탈퇴 처리 안내 -->
-            <div class="withdrawal-summary">
-              <h4 class="withdrawal-summary__title">탈퇴 처리 안내</h4>
-              <ul class="withdrawal-summary__list">
-                <li class="withdrawal-summary__item">
-                  탈퇴 후에도 이미 결제된 기간의 정산 처리가 필요할 수 있으며,
-                  법적/회계적 사유로 일정 기간 일부 정보가 보관될 수 있습니다.
-                </li>
-                <li class="withdrawal-summary__item">
-                  자세한 내용은 이용약관 및 개인정보 처리방침을 참고해 주세요.
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="modal__footer">
-            <button class="btn btn--secondary" type="button" data-action="request-consultation">
-              다른 옵션 상담 받아보기
-            </button>
-            <button class="btn btn--primary" type="button" data-action="confirm-withdrawal">
-              지금 바로 탈퇴 완료하기
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- 메인 스크립트 (나중에 작성) -->
+  <!-- 모듈 스크립트 -->
+  <script src="./scripts/modeManager.js"></script>
+  <script src="./scripts/tabManager.js"></script>
+  <script src="./scripts/modalManager.js"></script>
+  <script src="./scripts/chartManager.js"></script>
   <script src="./scripts/main.js"></script>
 </body>
 </html>
