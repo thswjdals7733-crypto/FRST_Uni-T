@@ -623,6 +623,97 @@ p {
 }
 
 /* ============================================
+   유틸 클래스: 정보 행 (info-row)
+   ============================================ */
+.info-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bg-gray-3);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+  min-width: 100px;
+  flex-shrink: 0;
+}
+
+.info-row__value {
+  font-size: 14px;
+  color: var(--text-main);
+  flex: 1;
+  line-height: 1.6;
+}
+
+.info-row__value--emphasized {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.info-row__notice {
+  font-size: 14px;
+  color: var(--text-main);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.info-row__notice--clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.info-row__notice--expanded {
+  display: block;
+}
+
+/* ============================================
+   유틸 클래스: 배지 (badge)
+   ============================================ */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.badge--info {
+  background-color: var(--bg-gray-2);
+  color: var(--text-main);
+}
+
+.badge--warning {
+  background-color: #FEF3C7;
+  color: #92400E;
+}
+
+.badge--success {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.badge--danger {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+/* ============================================
    13. Today 카드 스타일
    ============================================ */
 .today-status,
@@ -694,6 +785,41 @@ p {
 
 .todo-list__label {
   display: block;
+}
+
+/* 체크리스트 형태 개선 */
+.todo-list--checklist {
+  gap: 12px;
+}
+
+.todo-list--checklist .todo-list__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--bg-gray-2);
+  border-radius: 8px;
+}
+
+.todo-list__checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.todo-list--checklist .todo-list__label {
+  flex: 1;
+  cursor: pointer;
+  margin: 0;
+}
+
+.todo-list__item--hidden {
+  display: none;
+}
+
+.todo-list__item--hidden.todo-list__item--visible {
+  display: flex;
 }
 
 /* ============================================
@@ -1421,8 +1547,12 @@ p {
   display: none;
 }
 
+.matching-board__content[hidden] {
+  display: none !important;
+}
+
 .matching-board__content--active {
-  display: block;
+  display: block !important;
 }
 
 .matching-cards {

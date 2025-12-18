@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (canvas && !chartManager.chartInstances[canvas.id]) {
         chartManager.renderWhenVisible(canvas, () => {
           chartManager.createChart(canvas.id, {
-            type: 'doughnut',
+    type: 'doughnut',
     data: {
               labels: ['내 점수', '평균 점수'],
       datasets: [{
@@ -117,16 +117,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
         });
-      }
-    });
-  }
+    }
+  });
+}
 
   // 초기 차트 설정
   setupCharts();
 
-  // ============================================
+// ============================================
   // 알림센터 개선
-  // ============================================
+// ============================================
   const notificationsPanel = document.querySelector('.notifications');
   const openNotificationsBtn = document.querySelector('[data-action="open-notifications"]');
   
@@ -314,14 +314,14 @@ document.addEventListener('DOMContentLoaded', function() {
               <input type="checkbox" name="withdrawal-reason" value="other">
               <span>기타</span>
                 </label>
-              </div>
+          </div>
           <div class="withdrawal-survey__textarea">
             <label class="withdrawal-survey__label">
               <span>불편하셨던 점이 있다면 자유롭게 적어주세요. (50자 이상 입력 필요)</span>
             </label>
             <textarea class="withdrawal-survey__input" name="withdrawal-feedback" rows="4" placeholder="가능하다면, 더 나은 서비스를 위해 구체적인 사유를 적어주세요."></textarea>
-              </div>
             </div>
+          </div>
       `,
       actions: [
         {
@@ -427,23 +427,23 @@ document.addEventListener('DOMContentLoaded', function() {
                   <option value="science">과학</option>
                 </select>
               </label>
-            </div>
+          </div>
             <div class="recruit-form__group">
               <label class="recruit-form__label">
                 <span>학년</span>
                 <select class="recruit-form__select" name="grade" required>
-                  <option value="">선택하세요</option>
+                    <option value="">선택하세요</option>
                   <option value="hs1">고1</option>
                   <option value="hs2">고2</option>
                   <option value="hs3">고3</option>
-                </select>
-              </label>
+                  </select>
+                </label>
             </div>
             <div class="recruit-form__group recruit-form__group--row">
               <label class="recruit-form__label">
                 <span>현재 인원</span>
                 <input type="number" class="recruit-form__input" name="current-count" min="0" value="0" required>
-              </label>
+                </label>
               <label class="recruit-form__label">
                 <span>최소 인원</span>
                 <input type="number" class="recruit-form__input" name="min-count" min="2" value="3" required>
@@ -451,8 +451,8 @@ document.addEventListener('DOMContentLoaded', function() {
               <label class="recruit-form__label">
                 <span>최대 인원</span>
                 <input type="number" class="recruit-form__input" name="max-count" min="2" max="8" value="4" required>
-              </label>
-            </div>
+                </label>
+              </div>
             <div class="recruit-form__group">
               <label class="recruit-form__label">
                 <span>수업 시간</span>
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   <option value="weekday">평일 저녁</option>
                 </select>
               </label>
-            </div>
+              </div>
             <div class="recruit-form__group">
               <label class="recruit-form__label">
                 <span>수업 설명</span>
@@ -489,8 +489,8 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         ]
       });
+      });
     });
-  });
 
   document.querySelectorAll('[data-action="tutor-join-recruit"]').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -521,6 +521,52 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.addEventListener('click', () => {
       alert('답변 작성 화면으로 이동합니다. (placeholder)');
     });
+  });
+
+  // ============================================
+  // 공지사항 더보기 토글
+  // ============================================
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('[data-action="toggle-notice"]')) {
+      const button = e.target;
+      const notice = button.previousElementSibling;
+      if (notice && notice.classList.contains('info-row__notice')) {
+        if (notice.classList.contains('info-row__notice--clamped')) {
+          notice.classList.remove('info-row__notice--clamped');
+          notice.classList.add('info-row__notice--expanded');
+          button.textContent = '접기';
+        } else {
+          notice.classList.remove('info-row__notice--expanded');
+          notice.classList.add('info-row__notice--clamped');
+          button.textContent = '더보기';
+        }
+      }
+    }
+  });
+
+  // ============================================
+  // 오늘 할일 더보기 토글
+  // ============================================
+  document.addEventListener('click', function(e) {
+    if (e.target.matches('[data-action="toggle-todo"]')) {
+      const button = e.target;
+      const todoList = button.previousElementSibling;
+      if (todoList && todoList.classList.contains('todo-list')) {
+        const hiddenItems = todoList.querySelectorAll('.todo-list__item--hidden');
+        const isExpanded = hiddenItems[0] && hiddenItems[0].classList.contains('todo-list__item--visible');
+        
+        hiddenItems.forEach(item => {
+          if (isExpanded) {
+            item.classList.remove('todo-list__item--visible');
+          } else {
+            item.classList.add('todo-list__item--visible');
+          }
+        });
+        
+        const remainingCount = isExpanded ? hiddenItems.length : 0;
+        button.textContent = isExpanded ? `더보기 (${remainingCount}개)` : '접기';
+      }
+    }
   });
 
   // 기타 이벤트 핸들러들...
